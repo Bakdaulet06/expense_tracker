@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const expenseSchema = new mongoose.Schema({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
@@ -17,7 +17,7 @@ const expenseSchema = new mongoose.Schema({
     default: 0
   },
 
-  category: {
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
     default: null

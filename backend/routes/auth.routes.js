@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import User from "../models/User.js"
+import Category from "../models/Category.js"
 import { sendEmail } from "../utils/sendEmail.js"
 
 const router = express.Router()
@@ -18,9 +19,24 @@ router.post("/register", async (req, res) => {
 
   const passwordHash = await bcrypt.hash(password, 10)
 
-  await User.create({ email, passwordHash })
+  const user = await User.create({ email, passwordHash })
+  const defaultCategories = [
+    {userId: user._id, name: "Food",          color: "#22c55e", emoji: "🍴"},
+    {userId: user._id, name: "Transport",     color: "#3b82f6", emoji: "🚕"},
+    {userId: user._id, name: "Entertainment", color: "#a855f7", emoji: "🎟️"},
+    {userId: user._id, name: "Books",         color: "#f97316", emoji: "📚"},
+  ]
 
-  res.status(201).json({ message: "User registered successfully" })
+  await Category.insertMany(defaultCategories)
+  const categories = await Category.find({userId: user._id})
+
+  res.status(201).json({
+    user: {
+      _id: user._id,
+      email: user.email
+    },
+    categories
+  })
 })
 
 // LOGIN
@@ -42,8 +58,17 @@ router.post("/login", async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   )
-
-  res.json({ email, token })
+  console.log(user._id)
+  const categories = await Category.find({userId: user._id})
+  if(!categories){
+    console.log("No categories")
+  }else{
+    console.log(categories)
+  }
+  res.json({ 
+    email: user.email, 
+    token
+  })
 })
 
 // FORGOT PASSWORD (SEND CODE)

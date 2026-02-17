@@ -13,10 +13,10 @@ import "./index.css"
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<MainPage/>}/>
-      <Route path="/list" element={<ListPage/>}/>
-      <Route path="/stats" element={<StatsPage/>}/>
-      <Route path="/create-category" element={<CreateCategoryPage/>}/>
+      <Route path="/expense/add-expense" element={<MainPage/>}/>
+      <Route path="/expense/list" element={<ListPage/>}/>
+      <Route path="/expense/stats" element={<StatsPage/>}/>
+      <Route path="/expense/categories" element={<CreateCategoryPage />} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />

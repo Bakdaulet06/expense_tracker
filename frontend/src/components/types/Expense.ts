@@ -1,8 +1,9 @@
 export interface Expense{
-    id: number,
+    _id: string,
+    userId: string,
     name: string, 
-    price: number, 
+    cost: number, 
     description: string,
     date: Date,
-    category: string
+    categoryId: string
 }

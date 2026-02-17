@@ -3,19 +3,36 @@ import CategoryForm from "../subcomponents/CategoryForm"
 import CategoryCard from "../subcomponents/CategoryCard"
 import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import Sidebar from "../subcomponents/desktop/Sidebar"
-
-const existingCategories = [
-    { name: "Food",          color: "#22c55e", emoji: "🍴", count: 12 },
-    { name: "Transport",     color: "#3b82f6", emoji: "🚕", count: 8  },
-    { name: "Entertainment", color: "#a855f7", emoji: "🎟️", count: 5  },
-    { name: "Books",         color: "#f97316", emoji: "📚", count: 3  },
-]
+import {getCategories} from "../../api/expense"
+import { useEffect, useState } from "react"
+import { useCategories } from "../context/CategoriesProvider"
+import type { Category } from "../types/Category"
+import { useAuth } from "../context/AuthContext"
 
 const inputClass =
     "w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
 
 export default function CreateCategoryPage() {
     const activeTab = "categories"
+    const {categories, setCategories} = useCategories()
+    const [loading, setLoading] = useState(true)
+    const {user} = useAuth()
+
+    useEffect(() => {
+        async function fetchCategories() {
+            if(!user) return
+            try {
+                const res: Category[] = await getCategories(user?.token)
+                setCategories(res)
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchCategories()
+    }, []) 
 
     return (
         <div className="flex min-h-screen bg-white md:bg-gray-50">
@@ -44,10 +61,10 @@ export default function CreateCategoryPage() {
                         <div className="mt-10 md:mt-0 md:w-80 md:shrink-0">
                             <div className="flex items-center justify-between mb-4 md:mb-5">
                                 <span className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Existing</span>
-                                <span className="text-[10px] md:text-xs font-bold text-indigo-400 uppercase tracking-widest">{existingCategories.length} active</span>
+                                <span className="text-[10px] md:text-xs font-bold text-indigo-400 uppercase tracking-widest">{categories.length} active</span>
                             </div>
                             <div className="grid grid-cols-2 gap-3 md:gap-4">
-                                {existingCategories.map((cat) => (
+                                {categories.map((cat) => (
                                     <CategoryCard key={cat.name} cat={cat} size="sm"/>
                                 ))}
                             </div>

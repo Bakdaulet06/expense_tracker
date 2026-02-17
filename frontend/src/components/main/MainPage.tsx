@@ -5,22 +5,46 @@ import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import Sidebar from "../subcomponents/desktop/Sidebar"
 import type { Expense } from "../types/Expense"
 import { useAuth } from "../context/AuthContext"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useDate } from "../context/DateContext"
+import { useCategories } from "../context/CategoriesProvider"
+import { addExpense } from "../../api/expense"
 
 const inputClass =
     "w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
 
 export default function MainPage() {
     const [name, setName] = useState("")
-    const [price, setPrice] = useState(0)
+    const [cost, setcost] = useState(0)
     const [description, setDescription] = useState("")
-    const [category, setCategory] = useState("")
-
+    const [categoryId, setCategoryId] = useState("")
+    
+    const {date} = useDate()
     const {user} = useAuth()
+    const {categories} = useCategories()
     const activeTab = "add"
+    
+    useEffect(() => {
+        if(categories.length && !categoryId) {
+            setCategoryId(categories[0]._id)
+        }
+    }, [categories])
 
     async function handleAddExpense(){
-
+        if(!user) return
+        try{
+            const newExpense: Omit<Expense, "userId" | "_id"> = {
+                name,
+                cost,
+                description,
+                categoryId,
+                date
+            }
+            const res = await addExpense(newExpense, user.token)
+            console.log("Expense created: " + res)
+        }catch(err){
+            console.error(err)
+        }
     }
     return (
         <div className="flex min-h-screen bg-white md:bg-gray-50">
@@ -47,7 +71,7 @@ export default function MainPage() {
                             <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Cost</label>
                             <div className="relative">
                                 <span className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-sm md:text-base text-gray-400">$</span>
-                                <input type="number" placeholder="0.00" className={`${inputClass} pl-8 md:pl-10`} value={price} onChange={(e) => setPrice(Number(e.target.value))}/>
+                                <input type="number" placeholder="0.00" className={`${inputClass} pl-8 md:pl-10`} value={cost} onChange={(e) => setcost(Number(e.target.value))}/>
                             </div>
                         </div>
 
@@ -55,16 +79,11 @@ export default function MainPage() {
                         <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
                             <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
                             <div className="relative">
-                                <select className={`${inputClass} appearance-none`} value={category} onChange={(e) => setCategory(e.target.value)}>
-                                    <option value="">Select Category</option>
-                                    <option value="food">Food</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="taxi">Taxi</option>
-                                    <option value="rent">Rent</option>
+                                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+                                    {categories.map(category => 
+                                        <option key={category._id} value={category._id}>{category.name}</option>
+                                    )}
                                 </select>
-                                <span className="absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
-                                    <IconChevron size="md" />
-                                </span>
                             </div>
                         </div>
 
@@ -75,6 +94,8 @@ export default function MainPage() {
                                 placeholder="Add a short note..."
                                 rows={4}
                                 className={`${inputClass} resize-none`}
+                                value={description} 
+                                onChange={(e) => setDescription(e.target.value)}
                             />
                         </div>
 

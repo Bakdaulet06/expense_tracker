@@ -1,10 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
-import { Navigate } from "react-router-dom"
-
-interface User {
-  email: string,
-  token: string
-}
+import { useNavigate } from "react-router-dom"
+import type { User } from "../types/User"
 
 interface AuthContextType {
   user: User | null
@@ -16,18 +12,29 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const navigate = useNavigate()
 
-  // restore user on page reload
+  // Restore user from localStorage on page load
   useEffect(() => {
-    if(!user){
-      return
+    const storedUser = localStorage.getItem("user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
     }
-    setUser({email: user.email, token: user.token})
   }, [])
 
+  // Save user to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user))
+    } else {
+      localStorage.removeItem("user")
+    }
+  }, [user])
+
   function logout() {
-    <Navigate to={"/login"}/>
     setUser(null)
+    localStorage.removeItem("user")
+    navigate("/auth/login") // programmatic redirect
   }
 
   return (

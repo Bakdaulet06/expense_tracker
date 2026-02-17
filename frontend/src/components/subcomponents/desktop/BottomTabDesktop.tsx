@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom"
 export default function BottomTabDesktop(props: {activeTab: string}){
     const navigate = useNavigate()
     const navItems = [
-        { key: "add",        label: "Add",        path: "/",           Icon: IconAdd },
-        { key: "list",       label: "List",       path: "/list",       Icon: IconList },
-        { key: "stats",      label: "Stats",      path: "/stats",      Icon: IconStats },
-        { key: "categories", label: "Categories", path: "/create-category", Icon: IconCategory },
+        { key: "add",        label: "Add",        path: "/expense/add-expense",               Icon: IconAdd      },
+        { key: "list",       label: "List",       path: "/expense/list",           Icon: IconList     },
+        { key: "stats",      label: "Stats",      path: "/expense/stats",          Icon: IconStats    },
+        { key: "categories", label: "Categories", path: `/expense/categories`, Icon: IconCategory },
     ]
     return(
         <nav className="flex flex-col gap-1.5 flex-1">

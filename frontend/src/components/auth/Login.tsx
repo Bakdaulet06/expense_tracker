@@ -2,19 +2,27 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { loginUser } from "../../api/auth"
 import { useAuth } from "../context/AuthContext"
+import { useCategories } from "../context/CategoriesProvider"
+import { getCategories } from "../../api/expense"
+import type { User } from "../types/User"
 
 export default function Login() {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const navigate = useNavigate()
-    const { setUser } = useAuth()
+    const {setCategories} = useCategories()
+    const { user, setUser } = useAuth()
 
     async function handleLogin() {
         if (!email || !password) return
         try {
-            const res = await loginUser({ email, password })
+            const res: User = await loginUser({ email, password })
+            // 🔥 Save token
+            localStorage.setItem("token", res.token)
             setUser(res)
-            navigate("/")
+            const categories = await getCategories(res.token)
+            setCategories(categories)
+            navigate("/expense/add-expense")
         } catch (err) {
             console.error(err)
         }

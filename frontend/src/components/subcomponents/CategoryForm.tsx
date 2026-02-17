@@ -1,6 +1,9 @@
 import { useState } from "react"
 import IconPlus from "../svgs/IconPlus"
-
+import { addCategory } from "../../api/expense";
+import { useCategories } from "../context/CategoriesProvider";
+import type { Category } from "../types/Category";
+import { useAuth } from "../context/AuthContext";
 const presetColors = [
     "#22c55e", // green
     "#3b82f6", // blue
@@ -9,6 +12,8 @@ const presetColors = [
     "#ef4444", // red
     "#818cf8", // indigo-light
 ]
+
+const presetEmojis = ["💸", "🍴", "🚕", "🎟️", "📚", "💻", "🎵", "🏠", "🛒"];
 
 export default function CategoryForm({
     inputClass,
@@ -23,13 +28,39 @@ export default function CategoryForm({
 }) {
     const [selectedColor, setSelectedColor] = useState(presetColors[0])
     const [customColor, setCustomColor] = useState("")
+    const [name, setName] = useState("")
+    const [selectedEmoji, setSelectedEmoji] = useState(presetEmojis[0]);
+    const {setCategories} = useCategories()
+    const {user} = useAuth()
+
+    async function handleAddCategory() {
+        if(!user) return
+        if (!name) return alert("Please enter a category name");
+        const newCategory = {
+            name,
+            color: selectedColor,
+            emoji: selectedEmoji
+        };
+        console.log("Category to add:", newCategory);
+
+        try{
+            const res: Category = await addCategory(newCategory, user.token)
+            setCategories((prev: Category[]) => [...prev, res])
+        }catch(err){
+            console.error(err)
+        }
+        setName("");
+        setSelectedColor(presetColors[0]);
+        setSelectedEmoji(presetEmojis[0]);
+    }
+
 
     return (
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
             {/* Name */}
             <div className="space-y-2">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name</label>
-                <input type="text" placeholder="e.g. Subscriptions" className={inputClass} />
+                <input type="text" placeholder="e.g. Subscriptions" className={inputClass} value={name} onChange={(e) => setName(e.target.value)}/>
             </div>
 
             {/* Color theme */}
@@ -76,14 +107,27 @@ export default function CategoryForm({
                 </div>
             </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Description</label>
-                <textarea
-                    placeholder="Add a short note..."
-                    rows={4}
-                    className={`${inputClass} resize-none`}
-                />
+            {/* Emoji Picker */}
+            <div className="space-y-3">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Emoji
+                </label>
+                <div className="flex items-center gap-3 flex-wrap">
+                    {presetEmojis.map((emoji) => (
+                    <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => setSelectedEmoji(emoji)}
+                        className={`text-2xl transition-all shrink-0 ${
+                        selectedEmoji === emoji
+                            ? "ring-2 ring-offset-2 ring-gray-400 scale-110"
+                            : "hover:scale-105"
+                        }`}
+                    >
+                        {emoji}
+                    </button>
+                    ))}
+                </div>
             </div>
 
             {/* Submit */}
@@ -92,6 +136,7 @@ export default function CategoryForm({
                     type="submit"
                     className={btnClass}
                     style={{ backgroundColor: selectedColor }}
+                    onClick={handleAddCategory}
                 >
                     Save Category
                 </button>

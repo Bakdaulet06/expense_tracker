@@ -1,19 +1,28 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createUser, loginUser } from "../../api/auth"
+import { useAuth } from "../context/AuthContext"
+import { useCategories } from "../context/CategoriesProvider"
+import { getCategories } from "../../api/expense"
 
 export default function Register() {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const navigate = useNavigate()
+    const {setUser} = useAuth()
+    const {setCategories} = useCategories()
 
     async function handleRegister() {
         if (!email || !password) return
 
         try {
             await createUser({ email, password })
-            await loginUser({ email, password })
-            navigate("/")
+            const res = await loginUser({ email, password })
+            localStorage.setItem("token", res.token)
+            setUser(res)
+            const categories = await getCategories(res.token)
+            setCategories(categories)
+            navigate("/expense/add-expense")
         } catch (err: any) {
             console.error(err)
             alert(err.message || "Registration failed")
