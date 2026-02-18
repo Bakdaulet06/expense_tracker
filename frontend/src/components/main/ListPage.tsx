@@ -7,9 +7,11 @@ import type { Expense } from "../types/Expense"
 import ExpenseRow from "../subcomponents/ExpenseRow"
 import { useAuth } from "../context/AuthContext"
 import { getExpenses } from "../../api/expense"
+import { useCategories } from "../context/CategoriesProvider"
 
 
 export default function ListPage() {
+    const {categories} = useCategories()
     const [activeCategory, setActiveCategory] = useState("All Categories")
     const [activeMonth, setActiveMonth] = useState("January")
     const [expenses, setExpenses] = useState<Expense[]>([])
@@ -17,6 +19,7 @@ export default function ListPage() {
     const totalSpending = expenses.reduce((s, i) => s + Math.abs(i.cost), 0);
     const activeTab = "list"
     const {user} = useAuth()
+    const [categoryName, setCategoryName] = useState("All Categories")
 
     useEffect(() => {
         async function fetchExpenses(){
@@ -29,7 +32,7 @@ export default function ListPage() {
             }
         }
         fetchExpenses()
-    }, [])
+    }, [user])
 
     useEffect(() => {
         setGroupedExpenses(groupExpensesByDate(expenses));
@@ -49,12 +52,27 @@ export default function ListPage() {
 
                 {/* Mobile filters */}
                 <div className="flex md:hidden gap-3 px-6 mb-5">
-                    <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm text-gray-700 font-medium">
-                        {activeCategory} <IconChevron />
-                    </button>
-                    <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm text-gray-700 font-medium">
-                        {activeMonth} <IconChevron />
-                    </button>
+                    <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
+                        <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
+                        <div className="relative">
+                            <select value={categoryName} onChange={(e) => setCategoryName(e.target.value)}>
+                                <option value="All Categories" key={"All Categories"}>All Categories</option>
+                                {categories.map(category => 
+                                    <option key={category._id} value={category.name}>{category.name}</option>
+                                )}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
+                        <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Month</label>
+                        <div className="relative">
+                            <select value={categoryName} onChange={(e) => setCategoryName(e.target.value)}>
+                                {categories.map(category => 
+                                    <option key={category._id} value={category._id}>{category.name}</option>
+                                )}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Expense groups */}
@@ -99,11 +117,14 @@ function formatGroupLabel(date: Date): string {
 function groupExpensesByDate(items: Expense[]): GroupedExpenses[] {
     const map = new Map<string, Expense[]>()
     for (const item of items) {
-        const key = item.date.toDateString()
+        const dateObj = new Date(item.date)
+        const key = dateObj.toDateString()
         if (!map.has(key)) map.set(key, [])
         map.get(key)!.push(item)
     }
-    return Array.from(map.entries()).map(([key, items]) => ({
+    return Array.from(map.entries()).sort(([dateA], [dateB]) => {
+            return new Date(dateB).getTime() - new Date(dateA).getTime()
+        }).map(([key, items]) => ({
         group: formatGroupLabel(new Date(key)),
         items: items,
     }))
