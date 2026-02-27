@@ -35,11 +35,58 @@ router.post("/add-expense", authMiddleware, async (req, res) => {
   }
 })
 
-router.get("/list", authMiddleware, async (req, res) => {
+router.post("/list", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { categoryName, month } = req.body
+    let query = { userId }
+    if (categoryName && categoryName !== "All Categories") {
+      const category = await Category.findOne({
+        userId,
+        name: categoryName
+      })
+      if (!category) {
+        return res.json([]) 
+      }
+      query.categoryId = category._id
+    }
+    if (month !== undefined && month !== null && month !== "") {
+      const monthIndex = parseInt(month)
+      if (!isNaN(monthIndex)) {
+        const now = new Date()
+        const year = now.getFullYear()
+
+        const startDate = new Date(year, monthIndex, 1)
+        const endDate = new Date(year, monthIndex + 1, 1)
+
+        query.date = {
+          $gte: startDate,
+          $lt: endDate
+        }
+      }
+    }
+    const expenses = await Expense.find(query).sort({ date: -1 })
+    return res.json(expenses || [])
+  } catch (err) {
+    console.error(err)
+    return res.json([]) 
+  }
+})
+
+router.post("/list", authMiddleware, async (req, res) => {
   try{
     const userId = req.user.userId
-    const expenses = await Expense.find({ userId: userId });
-    res.json(expenses)
+    const {categoryName, month} = req.body
+    if(categoryName === "All Categories"){
+      const expenses = await Expense.findOne({ userId: userId });
+      res.json(expenses)
+    }else{
+      const category = await Category.find({userId: userId, name: categoryName})
+      console.log(category)
+      const expenses = await Expense.find({ userId: userId, categoryId: category._id});
+      console.log(expenses)
+      res.json(expenses)
+    }
   }catch(err){
     res.status(500).json({message: err.message})
   }

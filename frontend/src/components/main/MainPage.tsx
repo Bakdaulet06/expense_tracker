@@ -1,6 +1,4 @@
-
 import MainPageHeader from "../subcomponents/headers/MainPageHeader"
-import IconChevron from "../svgs/IconShevron"
 import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import Sidebar from "../subcomponents/desktop/Sidebar"
 import type { Expense } from "../types/Expense"
@@ -15,11 +13,11 @@ const inputClass =
 
 export default function MainPage() {
     const [name, setName] = useState("")
-    const [cost, setcost] = useState(0)
+    const [cost, setCost] = useState("")
     const [description, setDescription] = useState("")
     const [categoryId, setCategoryId] = useState("")
     
-    const {date} = useDate()
+    const {date, setDate} = useDate()
     const {user} = useAuth()
     const {categories} = useCategories()
     const activeTab = "add"
@@ -35,13 +33,17 @@ export default function MainPage() {
         try{
             const newExpense: Omit<Expense, "userId" | "_id"> = {
                 name,
-                cost,
+                cost: Number(cost) || 0,
                 description,
                 categoryId,
                 date
             }
-            const res = await addExpense(newExpense, user.token)
-            console.log("Expense created: " + res)
+            await addExpense(newExpense, user.token)
+            setCost("")
+            setName("")
+            setDescription("")
+            setDate(new Date())
+            setCategoryId("")
         }catch(err){
             console.error(err)
         }
@@ -71,7 +73,7 @@ export default function MainPage() {
                             <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Cost</label>
                             <div className="relative">
                                 <span className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-sm md:text-base text-gray-400">$</span>
-                                <input type="number" placeholder="0.00" className={`${inputClass} pl-8 md:pl-10`} value={cost} onChange={(e) => setcost(Number(e.target.value))}/>
+                                <input type="number" placeholder="0" className={`${inputClass} pl-8 md:pl-10`} value={cost} onChange={(e) => setCost(e.target.value)}/>
                             </div>
                         </div>
 

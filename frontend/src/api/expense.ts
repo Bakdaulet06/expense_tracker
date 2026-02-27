@@ -31,6 +31,22 @@ export async function getExpenses(token: string): Promise<Expense[]>{
     return res.json() as Promise<Expense[]>
 }
 
+export async function getExpensesByFilter(token: string, activeCategory: string, activeMonth: string): Promise<Expense[]> {
+    if (!token) throw new Error("User not authenticated")
+
+    const res = await fetch(`${API_URL}/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({categoryName: activeCategory, month: activeMonth})
+    })
+
+    if (!res.ok) throw new Error("Failed to filter category")
+    return res.json() as Promise<Expense[]>
+}
+
 // Add a new category
 export async function addCategory(category: { name: string, color: string, emoji: string }, token: string):  Promise<Category> {
     if (!token) throw new Error("User not authenticated")

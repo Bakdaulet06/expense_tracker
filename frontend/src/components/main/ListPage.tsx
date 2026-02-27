@@ -1,38 +1,47 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import Sidebar from "../subcomponents/desktop/Sidebar"
 import ListPageHeader from "../subcomponents/headers/ListPageHeader"
-import IconChevron from "../svgs/IconShevron"
 import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import type { Expense } from "../types/Expense"
 import ExpenseRow from "../subcomponents/ExpenseRow"
 import { useAuth } from "../context/AuthContext"
-import { getExpenses } from "../../api/expense"
+import { getExpensesByFilter } from "../../api/expense"
 import { useCategories } from "../context/CategoriesProvider"
-
 
 export default function ListPage() {
     const {categories} = useCategories()
     const [activeCategory, setActiveCategory] = useState("All Categories")
-    const [activeMonth, setActiveMonth] = useState("January")
+    const [activeMonth, setActiveMonth] = useState("")
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [groupedExpenses, setGroupedExpenses] = useState<GroupedExpenses[]>([])
-    const totalSpending = expenses.reduce((s, i) => s + Math.abs(i.cost), 0);
+    const totalSpending = useMemo(() => {
+        return expenses.reduce((sum, item) => 
+            sum + Math.abs(item.cost), 0
+        )
+    }, [expenses])
     const activeTab = "list"
     const {user} = useAuth()
-    const [categoryName, setCategoryName] = useState("All Categories")
-
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     useEffect(() => {
-        async function fetchExpenses(){
-            if(!user) return
-            try{
-                const res: Expense[] = await getExpenses(user.token)
+        async function fetchFiltered() {
+            if (!user) return
+
+            try {
+                const res = await getExpensesByFilter(
+                    user.token,
+                    activeCategory,
+                    activeMonth
+                )
+                console.log("Response:", res)
+                console.log("Is array:", Array.isArray(res))
                 setExpenses(res)
-            }catch(err){
+            } catch (err) {
                 console.error(err)
             }
         }
-        fetchExpenses()
-    }, [user])
+
+        fetchFiltered()
+    }, [activeCategory, activeMonth, user])
 
     useEffect(() => {
         setGroupedExpenses(groupExpensesByDate(expenses));
@@ -48,27 +57,32 @@ export default function ListPage() {
             <div className="flex-1 flex flex-col min-h-screen">
 
                 {/* Header */}
-                <ListPageHeader totalSpending={totalSpending} activeCategory={activeCategory} activeMonth={activeMonth}/>
+                <ListPageHeader
+                    totalSpending={totalSpending}
+                    activeCategory={activeCategory}
+                    activeMonth={activeMonth}
+                    setActiveCategory={setActiveCategory}
+                    setActiveMonth={setActiveMonth}
+                />
 
                 {/* Mobile filters */}
                 <div className="flex md:hidden gap-3 px-6 mb-5">
                     <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
                         <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
                         <div className="relative">
-                            <select value={categoryName} onChange={(e) => setCategoryName(e.target.value)}>
+                            <select value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)}>
                                 <option value="All Categories" key={"All Categories"}>All Categories</option>
                                 {categories.map(category => 
                                     <option key={category._id} value={category.name}>{category.name}</option>
                                 )}
                             </select>
                         </div>
-                    </div>
-                    <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
                         <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Month</label>
                         <div className="relative">
-                            <select value={categoryName} onChange={(e) => setCategoryName(e.target.value)}>
-                                {categories.map(category => 
-                                    <option key={category._id} value={category._id}>{category.name}</option>
+                            <select value={activeMonth} onChange={(e) => setActiveMonth(e.target.value)}>
+                                <option value="">All Time</option>
+                                {months.map((month, index) => 
+                                    <option key={month} value={index.toString()}>{month}</option>
                                 )}
                             </select>
                         </div>
