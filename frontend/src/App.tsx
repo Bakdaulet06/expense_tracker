@@ -7,12 +7,14 @@ import MainPage from "./components/main/MainPage"
 import CreateCategoryPage from "./components/main/CreateCategoryPage"
 import StatsPage from "./components/main/StatsPage"
 import ListPage from "./components/main/ListPage"
+import { Navigate } from "react-router-dom"
 
 import "./index.css"
 
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/auth/login" replace />} />
       <Route path="/expense/add-expense" element={<MainPage/>}/>
       <Route path="/expense/list" element={<ListPage/>}/>
       <Route path="/expense/stats" element={<StatsPage/>}/>

@@ -1,5 +1,6 @@
 import type { Category } from "../components/types/Category"
 import type { Expense } from "../components/types/Expense"
+import type {Stats} from "../components/types/Stats"
 
 const API_URL = "http://localhost:3002/expense"
 
@@ -17,18 +18,6 @@ export async function addExpense(expense: Omit<Expense, "userId" | "_id">, token
 
     if (!res.ok) throw new Error("Failed to add expense")
     return res.json()
-}
-
-export async function getExpenses(token: string): Promise<Expense[]>{
-    const res = await fetch(`${API_URL}/list`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    if (!res.ok) throw new Error("Failed to get categories")
-    return res.json() as Promise<Expense[]>
 }
 
 export async function getExpensesByFilter(token: string, activeCategory: string, activeMonth: string): Promise<Expense[]> {
@@ -76,4 +65,18 @@ export async function getCategories(token: string): Promise<Category[]> {
 
     if (!res.ok) throw new Error("Failed to get categories")
     return res.json() as Promise<Category[]>
+}
+
+export async function getStats(token: string, timeFilter: string): Promise<Stats[]> {
+    const res = await fetch(`${API_URL}/stats`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({timeFilter})
+    })
+
+    if (!res.ok) throw new Error("Failed to get stats")
+    return res.json()
 }

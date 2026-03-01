@@ -32,8 +32,6 @@ export default function ListPage() {
                     activeCategory,
                     activeMonth
                 )
-                console.log("Response:", res)
-                console.log("Is array:", Array.isArray(res))
                 setExpenses(res)
             } catch (err) {
                 console.error(err)

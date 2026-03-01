@@ -73,25 +73,6 @@ router.post("/list", authMiddleware, async (req, res) => {
   }
 })
 
-router.post("/list", authMiddleware, async (req, res) => {
-  try{
-    const userId = req.user.userId
-    const {categoryName, month} = req.body
-    if(categoryName === "All Categories"){
-      const expenses = await Expense.findOne({ userId: userId });
-      res.json(expenses)
-    }else{
-      const category = await Category.find({userId: userId, name: categoryName})
-      console.log(category)
-      const expenses = await Expense.find({ userId: userId, categoryId: category._id});
-      console.log(expenses)
-      res.json(expenses)
-    }
-  }catch(err){
-    res.status(500).json({message: err.message})
-  }
-})
-
 router.get("/categories", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId
@@ -133,5 +114,46 @@ router.post("/categories", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.post("/stats", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { timeFilter } = req.body
+    let dateFilter = {}
+    const now = new Date()
+
+    if (timeFilter === "Daily") {
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      dateFilter = { date: { $gte: startOfDay } }
+    } else if (timeFilter === "Weekly") {
+      const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
+      dateFilter = { date: { $gte: startOfWeek } }
+    } else if (timeFilter === "Monthly") {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      dateFilter = { date: { $gte: startOfMonth } }
+    }
+
+    const categories = await Category.find({ userId })
+    const stats = await Promise.all(categories.map(async (category) => {
+      const expenseCount = await Expense.countDocuments({ categoryId: category._id, userId, ...dateFilter })
+      const totalAmount = await Expense.aggregate([
+        { $match: { categoryId: category._id, userId, ...dateFilter } },
+        { $group: { _id: null, total: { $sum: "$cost" } } }
+      ])
+      console.log("Total amount for category", category.name, totalAmount)
+      return {
+        name: category.name,
+        transactions: expenseCount,
+        amount: totalAmount[0] ? totalAmount[0].total : 0,
+        color: category.color,
+        emoji: category.emoji
+      }
+    }))
+    res.json(stats)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server error" })
+  }
+})
 
 export default router
