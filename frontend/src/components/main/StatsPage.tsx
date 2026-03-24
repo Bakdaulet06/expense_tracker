@@ -51,7 +51,7 @@ export default function StatsPage() {
     return (
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar activeTab={activeTab}/>
-            <div className="flex-1 flex flex-col min-h-screen">
+            <div className="flex-1 flex flex-col h-screen">
                 <StatsPageHeader />
                 <div className="flex gap-3 px-6 md:px-14 md:pt-5 pb-5 md:pb-0">
                     <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
