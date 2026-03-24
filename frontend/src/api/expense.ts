@@ -67,14 +67,13 @@ export async function getCategories(token: string): Promise<Category[]> {
     return res.json() as Promise<Category[]>
 }
 
-export async function getStats(token: string, timeFilter: string): Promise<Stats[]> {
-    const res = await fetch(`${API_URL}/stats`, {
+export async function getStats(token: string, startDate: Date, endDate: Date): Promise<Stats[]> {
+    const res = await fetch(`${API_URL}/stats?startDate=${startDate}&endDate=${endDate}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({timeFilter})
+        }
     })
 
     if (!res.ok) throw new Error("Failed to get stats")

@@ -2,6 +2,7 @@ import express from "express"
 import Expense from "../models/Expense.js"
 import Category from "../models/Category.js"
 import { authMiddleware } from "../middleware/auth.middleware.js"
+import mongoose from "mongoose"
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -118,26 +119,24 @@ router.post("/categories", authMiddleware, async (req, res) => {
 router.post("/stats", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId
-    const { timeFilter } = req.body
-    let dateFilter = {}
-    const now = new Date()
-
-    if (timeFilter === "Daily") {
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      dateFilter = { date: { $gte: startOfDay } }
-    } else if (timeFilter === "Weekly") {
-      const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
-      dateFilter = { date: { $gte: startOfWeek } }
-    } else if (timeFilter === "Monthly") {
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-      dateFilter = { date: { $gte: startOfMonth } }
+    const { startDate, endDate } = req.query
+    const end = new Date(endDate)
+    end.setHours(23, 59, 59, 999)
+    let dateFilter = {
+      date: {
+        $gte: new Date(startDate),
+        $lte: end
+      }
     }
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    console.log(dateFilter)
 
     const categories = await Category.find({ userId })
     const stats = await Promise.all(categories.map(async (category) => {
-      const expenseCount = await Expense.countDocuments({ categoryId: category._id, userId, ...dateFilter })
+      const filter = { categoryId: category._id, userId: userObjectId, ...dateFilter }
+      const expenseCount = await Expense.countDocuments(filter)
       const totalAmount = await Expense.aggregate([
-        { $match: { categoryId: category._id, userId, ...dateFilter } },
+        { $match: filter },
         { $group: { _id: null, total: { $sum: "$cost" } } }
       ])
       console.log("Total amount for category", category.name, totalAmount)

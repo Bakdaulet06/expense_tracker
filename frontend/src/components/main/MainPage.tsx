@@ -72,7 +72,7 @@ export default function MainPage() {
                         <div className="space-y-1.5 md:space-y-2">
                             <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Cost</label>
                             <div className="relative">
-                                <span className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-sm md:text-base text-gray-400">$</span>
+                                <span className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-sm md:text-base text-gray-400">₸</span>
                                 <input type="number" placeholder="0" className={`${inputClass} pl-8 md:pl-10`} value={cost} onChange={(e) => setCost(e.target.value)}/>
                             </div>
                         </div>

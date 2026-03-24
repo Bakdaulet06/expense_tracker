@@ -23,7 +23,7 @@ export default function ExpenseRow({ item }: { item: Expense }) {
             </div>
             <div className="text-right shrink-0">
                 <p className="text-sm font-bold text-black">
-                    {item.cost < 0 ? "-" : "+"}${Math.abs(item.cost).toFixed(2)}
+                    {Math.abs(item.cost).toFixed(2)}₸
                 </p>
             </div>
         </div>

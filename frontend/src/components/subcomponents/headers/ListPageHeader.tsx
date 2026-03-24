@@ -18,7 +18,7 @@ export default function ListPageHeader(props: {
         </p>
         <div className="flex items-center gap-3 md:gap-4">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-            ${props.totalSpending.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            {props.totalSpending.toLocaleString("en-US", { minimumFractionDigits: 2 })}₸
           </h1>
         </div>
       </div>

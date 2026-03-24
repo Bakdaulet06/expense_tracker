@@ -13,7 +13,7 @@ export default function StatsRow({ stats }: { stats: Stats }) {
                 </p>
             </div>
             <p className="text-sm md:text-lg font-bold text-gray-800 shrink-0">
-                ${stats.amount.toFixed(2)}
+                {stats.amount.toFixed(2)}₸
             </p>
         </div>
     )
