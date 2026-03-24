@@ -1,7 +1,6 @@
 import { createContext, useState, useContext } from "react";
 import type { Category } from "../types/Category";
 import { useEffect } from "react";
-import axios from "axios";
 import { getCategories } from "../../api/expense";
 
 interface CategoriesContextType{

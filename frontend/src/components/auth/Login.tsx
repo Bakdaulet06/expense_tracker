@@ -11,7 +11,7 @@ export default function Login() {
     const [password, setPassword] = useState<string>("")
     const navigate = useNavigate()
     const {setCategories} = useCategories()
-    const { user, setUser } = useAuth()
+    const { setUser } = useAuth()
 
     async function handleLogin() {
         if (!email || !password) return

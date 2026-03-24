@@ -27,7 +27,6 @@ export default function CategoryForm({
     plusSize: string
 }) {
     const [selectedColor, setSelectedColor] = useState(presetColors[0])
-    const [customColor, setCustomColor] = useState("")
     const [name, setName] = useState("")
     const [selectedEmoji, setSelectedEmoji] = useState(presetEmojis[0]);
     const {setCategories} = useCategories()
@@ -90,7 +89,6 @@ export default function CategoryForm({
                             type="color"
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                             onChange={(e) => {
-                                setCustomColor(e.target.value)
                                 setSelectedColor(e.target.value)
                             }}
                         />

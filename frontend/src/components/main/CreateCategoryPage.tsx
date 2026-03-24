@@ -4,7 +4,7 @@ import CategoryCard from "../subcomponents/CategoryCard"
 import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import Sidebar from "../subcomponents/desktop/Sidebar"
 import {getCategories} from "../../api/expense"
-import { useEffect, useState } from "react"
+import { useEffect} from "react"
 import { useCategories } from "../context/CategoriesProvider"
 import type { Category } from "../types/Category"
 import { useAuth } from "../context/AuthContext"
@@ -15,7 +15,6 @@ const inputClass =
 export default function CreateCategoryPage() {
     const activeTab = "categories"
     const {categories, setCategories} = useCategories()
-    const [loading, setLoading] = useState(true)
     const {user} = useAuth()
 
     useEffect(() => {
@@ -26,8 +25,6 @@ export default function CreateCategoryPage() {
                 setCategories(res)
             } catch (err) {
                 console.error(err)
-            } finally {
-                setLoading(false)
             }
         }
 

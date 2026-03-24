@@ -2,7 +2,7 @@ import type { Category } from "../components/types/Category"
 import type { Expense } from "../components/types/Expense"
 import type {Stats} from "../components/types/Stats"
 
-const API_URL = "http://localhost:3002/expense"
+const API_URL = `${import.meta.env.VITE_API_URL}/expense`
 
 
 // Add a new expense

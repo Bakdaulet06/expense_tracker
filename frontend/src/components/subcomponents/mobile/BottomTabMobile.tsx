@@ -3,11 +3,9 @@ import IconList from "../../svgs/IconList"
 import IconStats from "../../svgs/IconStats"
 import IconCategory from "../../svgs/IconCategory"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../../context/AuthContext"
 
 export default function BottomTabMobile(props: { activeTab: string }) {
     const navigate = useNavigate()
-    const {user} = useAuth()
     const navItems = [
         { key: "add",        label: "Add",        path: "/expense/add-expense",               Icon: IconAdd      },
         { key: "list",       label: "List",       path: "/expense/list",           Icon: IconList     },
