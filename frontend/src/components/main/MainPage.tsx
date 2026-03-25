@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { useDate } from "../context/DateContext"
 import { useCategories } from "../context/CategoriesProvider"
 import { addExpense } from "../../api/expense"
+import PopUp from "../subcomponents/PopUp"
 
 const inputClass =
     "w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
@@ -16,6 +17,8 @@ export default function MainPage() {
     const [cost, setCost] = useState("")
     const [description, setDescription] = useState("")
     const [categoryId, setCategoryId] = useState("")
+    const [popUpStatus, setPopUpStatus] = useState<"inactive" | "success" | "failure">("inactive")
+    const [popUpMessage, setPopUpMessage] = useState("")
     
     const {date, setDate} = useDate()
     const {user} = useAuth()
@@ -39,12 +42,16 @@ export default function MainPage() {
                 date
             }
             await addExpense(newExpense, user.token)
+            setPopUpMessage("Expense created Succesffully!")
+            setPopUpStatus("success")
             setCost("")
             setName("")
             setDescription("")
             setDate(new Date())
-            setCategoryId("")
+            setCategoryId(categories[0]?._id ?? "")
         }catch(err){
+            setPopUpMessage("Error! Please Fill required fields.")
+            setPopUpStatus("failure")
             console.error(err)
         }
     }
@@ -52,6 +59,7 @@ export default function MainPage() {
         <div className="flex min-h-screen bg-white md:bg-gray-50">
             <Sidebar activeTab={activeTab}/>
             <div className="flex-1 flex flex-col h-screen">
+                <PopUp message={popUpMessage} status={popUpStatus} onClose={() => setPopUpStatus("inactive")}/>
                 <MainPageHeader />
 
                 {/* Form area */}

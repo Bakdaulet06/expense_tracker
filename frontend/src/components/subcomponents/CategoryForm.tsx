@@ -20,11 +20,15 @@ export default function CategoryForm({
     btnClass,
     circleSize,
     plusSize,
+    setPopUpMessage,
+    setPopUpStatus
 }: {
     inputClass: string
     btnClass: string
     circleSize: string
     plusSize: string
+    setPopUpMessage: (message: string) => void
+    setPopUpStatus: (status: "inactive" | "success" | "failure") => void
 }) {
     const [selectedColor, setSelectedColor] = useState(presetColors[0])
     const [name, setName] = useState("")
@@ -34,7 +38,11 @@ export default function CategoryForm({
 
     async function handleAddCategory() {
         if(!user) return
-        if (!name) return alert("Please enter a category name");
+        if (!name) {
+            setPopUpMessage("Please, fill out the name for category!")
+            setPopUpStatus("failure")
+            return
+        }
         const newCategory = {
             name,
             color: selectedColor,
@@ -45,6 +53,8 @@ export default function CategoryForm({
         try{
             const res: Category = await addCategory(newCategory, user.token)
             setCategories((prev: Category[]) => [...prev, res])
+            setPopUpMessage("Category created successfully!")
+            setPopUpStatus("success")
         }catch(err){
             console.error(err)
         }
@@ -52,7 +62,6 @@ export default function CategoryForm({
         setSelectedColor(presetColors[0]);
         setSelectedEmoji(presetEmojis[0]);
     }
-
 
     return (
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>

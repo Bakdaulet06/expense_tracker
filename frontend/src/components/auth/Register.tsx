@@ -4,6 +4,7 @@ import { createUser, loginUser } from "../../api/auth"
 import { useAuth } from "../context/AuthContext"
 import { useCategories } from "../context/CategoriesProvider"
 import { getCategories } from "../../api/expense"
+import PopUp from "../subcomponents/PopUp"
 
 export default function Register() {
     const [email, setEmail] = useState<string>("")
@@ -11,26 +12,36 @@ export default function Register() {
     const navigate = useNavigate()
     const {setUser} = useAuth()
     const {setCategories} = useCategories()
+    const [popUpMessage, setPopUpMessage] = useState("")
+    const [popUpStatus, setPopUpStatus] = useState<"inactive" | "success" | "failure">("inactive")
 
     async function handleRegister() {
-        if (!email || !password) return
+        if (!email || !password) {
+            setPopUpMessage("Please fill out both email and password!")
+            setPopUpStatus("failure")
+            return
+        }
 
         try {
             await createUser({ email, password })
             const res = await loginUser({ email, password })
             localStorage.setItem("token", res.token)
             setUser(res)
+            setPopUpMessage("User created successfully!")
+            setPopUpStatus("success")
             const categories = await getCategories(res.token)
             setCategories(categories)
             navigate("/expense/add-expense")
         } catch (err: any) {
+            setPopUpMessage(err.message)
+            setPopUpStatus("failure")
             console.error(err)
-            alert(err.message || "Registration failed")
         }
     }
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+            <PopUp status={popUpStatus} message={popUpMessage} onClose={() => setPopUpStatus("inactive")}/>
             <div className="bg-white rounded-3xl shadow-sm w-full max-w-sm px-8 py-12 flex flex-col items-center gap-6">
 
                 {/* Logo */}

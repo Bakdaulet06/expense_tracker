@@ -11,18 +11,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = localStorage.getItem("user")
+    return stored ? JSON.parse(stored) : null
+  })
   const navigate = useNavigate()
 
-  // Restore user from localStorage on page load
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
-    }
-  }, [])
-
-  // Save user to localStorage whenever it changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user))
@@ -33,8 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function logout() {
     setUser(null)
-    localStorage.removeItem("user")
-    navigate("/auth/login") // programmatic redirect
+    navigate("/auth/login")
   }
 
   return (

@@ -4,6 +4,7 @@ import { loginUser } from "../../api/auth"
 import { useAuth } from "../context/AuthContext"
 import { useCategories } from "../context/CategoriesProvider"
 import { getCategories } from "../../api/expense"
+import PopUp from "../subcomponents/PopUp"
 import type { User } from "../types/User"
 
 export default function Login() {
@@ -12,9 +13,15 @@ export default function Login() {
     const navigate = useNavigate()
     const {setCategories} = useCategories()
     const { setUser } = useAuth()
+    const [popUpMessage, setPopUpMessage] = useState("")
+    const [popUpStatus, setPopUpStatus] = useState<"inactive" | "success" | "failure">("inactive")
 
     async function handleLogin() {
-        if (!email || !password) return
+        if (!email || !password) {
+            setPopUpMessage("Please fill out both email and password!")
+            setPopUpStatus("failure")
+            return
+        }
         try {
             const res: User = await loginUser({ email, password })
             // 🔥 Save token
@@ -24,12 +31,15 @@ export default function Login() {
             setCategories(categories)
             navigate("/expense/add-expense")
         } catch (err) {
+            setPopUpMessage("Invalid Credentials")
+            setPopUpStatus("failure")
             console.error(err)
         }
     }
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+            <PopUp status={popUpStatus} message={popUpMessage} onClose={() => setPopUpStatus("inactive")}/>
             <div className="bg-white rounded-3xl shadow-sm w-full max-w-sm px-8 py-12 flex flex-col items-center gap-6">
 
                 {/* Logo */}

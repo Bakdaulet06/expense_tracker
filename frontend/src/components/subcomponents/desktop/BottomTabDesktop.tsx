@@ -2,6 +2,7 @@ import IconAdd from "../../svgs/IconAdd"
 import IconList from "../../svgs/IconList"
 import IconStats from "../../svgs/IconStats"
 import IconCategory from "../../svgs/IconCategory"
+import IconProfile from "../../svgs/IconProfile"
 import { useNavigate } from "react-router-dom"
 
 export default function BottomTabDesktop(props: {activeTab: string}){
@@ -11,6 +12,7 @@ export default function BottomTabDesktop(props: {activeTab: string}){
         { key: "list",       label: "List",       path: "/expense/list",           Icon: IconList     },
         { key: "stats",      label: "Stats",      path: "/expense/stats",          Icon: IconStats    },
         { key: "categories", label: "Categories", path: `/expense/categories`, Icon: IconCategory },
+        { key: "profile",    label: "Profile",     path: "/expense/profile",       Icon: IconProfile  },
     ]
     return(
         <nav className="flex flex-col gap-1.5 flex-1">

@@ -11,7 +11,10 @@ export async function createUser(data: UserCredentials){
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-    if(!res.ok) throw new Error("Failed to register")
+    if(!res.ok) {
+        const err = await res.json()
+        throw new Error(err.message || "Something went wrong")
+    }
     return res.json()
 }
 

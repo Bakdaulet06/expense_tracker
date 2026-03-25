@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     {userId: user._id, name: "Food",          color: "#22c55e", emoji: "🍴"},
     {userId: user._id, name: "Transport",     color: "#3b82f6", emoji: "🚕"},
     {userId: user._id, name: "Entertainment", color: "#a855f7", emoji: "🎟️"},
-    {userId: user._id, name: "Books",         color: "#f97316", emoji: "📚"},
+    {userId: user._id, name: "Other",         color: "#f97316", emoji: "💸"},
   ]
 
   await Category.insertMany(defaultCategories)
