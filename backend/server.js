@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-dotenv.config()
+dotenv.config({ path: `.env.${process.env.NODE_ENV || "development"}` })
 import express from "express"
 import mongoose from "mongoose"
 import authRoutes from "./routes/auth.routes.js"

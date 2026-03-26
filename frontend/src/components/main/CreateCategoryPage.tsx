@@ -35,12 +35,14 @@ export default function CreateCategoryPage() {
         }
 
         fetchCategories()
-    }, [])
+    }, [user, categories])
 
     async function handleDeleteCategory() {
         if (!user || !selectedCategory) return
         try {
             await deleteCategory(user.token, selectedCategory._id)
+            setWarningStatus(false)
+            setCategories([])
             setPopUpMessage("Category deleted successfully!")
             setPopUpStatus("success")
         } catch (err) {

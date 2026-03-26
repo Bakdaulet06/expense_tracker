@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import IconPlus from "../svgs/IconPlus"
 import { addCategory } from "../../api/expense";
 import { useCategories } from "../context/CategoriesProvider";
@@ -37,6 +37,14 @@ export default function CategoryForm({
     const [selectedEmoji, setSelectedEmoji] = useState(category?.emoji || presetEmojis[0]);
     const {setCategories} = useCategories()
     const {user} = useAuth()
+
+    useEffect(() => {
+        if (category) {
+            setSelectedColor(category.color)
+            setName(category.name)
+            setSelectedEmoji(category.emoji)
+        }
+    }, [category])
 
     async function handleAddCategory() {
         if(!user) return
@@ -143,7 +151,7 @@ export default function CategoryForm({
             <div className="pt-1">
                 <button
                     type="submit"
-                    className={btnClass}
+                    className={`${btnClass} cursor-pointer`}
                     style={{ backgroundColor: selectedColor }}
                     onClick={handleAddCategory}
                 >
