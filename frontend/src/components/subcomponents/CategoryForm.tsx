@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import IconPlus from "../svgs/IconPlus"
-import { addCategory } from "../../api/expense";
+import { addCategory, updateCategory } from "../../api/expense";
 import { useCategories } from "../context/CategoriesProvider";
 import type { Category } from "../types/Category";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 const presetColors = [
     "#22c55e", // green
     "#3b82f6", // blue
@@ -22,7 +23,8 @@ export default function CategoryForm({
     plusSize,
     setPopUpMessage,
     setPopUpStatus,
-    category
+    category,
+    editState
 }: {
     inputClass: string
     btnClass: string
@@ -30,13 +32,15 @@ export default function CategoryForm({
     plusSize: string
     setPopUpMessage: (message: string) => void
     setPopUpStatus: (status: "inactive" | "success" | "failure") => void,
-    category?: Category
+    category?: Category,
+    editState?: boolean
 }) {
     const [selectedColor, setSelectedColor] = useState(category?.color || presetColors[0])
     const [name, setName] = useState(category?.name || "")
     const [selectedEmoji, setSelectedEmoji] = useState(category?.emoji || presetEmojis[0]);
     const {setCategories} = useCategories()
     const {user} = useAuth()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (category) {
@@ -71,6 +75,21 @@ export default function CategoryForm({
         setName("");
         setSelectedColor(presetColors[0]);
         setSelectedEmoji(presetEmojis[0]);
+    }
+
+    async function handleUpdateCategory(){
+        if(!user || !category) return
+        if (!name) {
+            setPopUpMessage("Please, fill out the name for category!")
+            setPopUpStatus("failure")
+            return
+        }
+        try{
+            await updateCategory(user.token, category?._id, name, selectedEmoji, selectedColor)
+            navigate("/expense/categories")
+        }catch(err){
+            console.error(err)
+        }
     }
 
     return (
@@ -153,7 +172,7 @@ export default function CategoryForm({
                     type="submit"
                     className={`${btnClass} cursor-pointer`}
                     style={{ backgroundColor: selectedColor }}
-                    onClick={handleAddCategory}
+                    onClick={editState ? handleAddCategory : handleUpdateCategory}
                 >
                     Save Category
                 </button>

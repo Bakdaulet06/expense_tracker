@@ -102,6 +102,20 @@ export async function deleteCategory(token: string, categoryId: string){
     return res.json()
 }
 
+export async function updateCategory(token: string, categoryId: string, name: string, emoji: string, color: string){
+    const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({name, emoji, color})
+    })
+
+    if(!res.ok) throw new Error("Failed to update category")
+    return res.json()
+}
+
 export async function getStats(token: string, startDate: Date, endDate: Date): Promise<Stats[]> {
     const res = await fetch(`${API_URL}/stats?startDate=${startDate}&endDate=${endDate}`, {
         method: "POST",

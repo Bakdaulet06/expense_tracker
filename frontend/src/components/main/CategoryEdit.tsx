@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import type { Category } from "./types/Category";
-import { useAuth } from "./context/AuthContext";
-import { getCategory } from "../api/expense";
-import CategoryForm from "./subcomponents/CategoryForm";
-import PopUp from "./subcomponents/PopUp";
+import type { Category } from "../types/Category";
+import { useAuth } from "../context/AuthContext";
+import { getCategory } from "../../api/expense";
+import CategoryForm from "../subcomponents/CategoryForm";
+import PopUp from "../subcomponents/PopUp";
 
 export default function CategoryEdit() {
     const { categoryId } = useParams();
@@ -35,7 +35,6 @@ export default function CategoryEdit() {
                 <div className="flex flex-col md:gap-12 md:max-w-5xl">
                     <PopUp status={popUpStatus} message={popUpMessage} onClose={() => setPopUpStatus("inactive")} />
                     <div className="flex-1 min-w-0">
-
                         <CategoryForm
                             category={category}
                             btnClass="w-full md:w-[300px] text-white font-semibold text-sm md:text-base py-4 md:px-14 rounded-2xl shadow-lg transition-all active:scale-[0.98] hover:opacity-90"

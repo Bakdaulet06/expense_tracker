@@ -135,7 +135,30 @@ router.get("/categories/:categoryId", authMiddleware, async (req, res) => {
 })
 
 router.put("/categories/:categoryId", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { categoryId } = req.params
+    const { name, color, emoji } = req.body
 
+    if (!name) {
+      return res.status(400).json({ message: "Category name is required" })
+    }
+
+    const updatedCategory = await Category.findOneAndUpdate(
+      { _id: categoryId, userId },
+      { name, color, emoji },
+      { new: true } // returns the updated document
+    )
+
+    if (!updatedCategory) {
+      return res.status(404).json({ message: "Category not found" })
+    }
+
+    return res.json(updatedCategory)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server error" })
+  }
 })
 
 router.delete("/categories/:categoryId", authMiddleware, async (req, res) => {

@@ -8,7 +8,7 @@ import CreateCategoryPage from "./components/main/CreateCategoryPage"
 import StatsPage from "./components/main/StatsPage"
 import ListPage from "./components/main/ListPage"
 import ProfilePage from "./components/main/ProfilePage"
-import CategoryEdit from "./components/CategoryEdit"
+import CategoryEdit from "./components/main/CategoryEdit"
 import { Navigate } from "react-router-dom"
 
 import "./index.css"
