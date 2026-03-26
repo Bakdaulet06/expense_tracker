@@ -4,7 +4,6 @@ import type {Stats} from "../components/types/Stats"
 
 const API_URL = `${import.meta.env.VITE_API_URL}/expense`
 
-
 // Add a new expense
 export async function addExpense(expense: Omit<Expense, "userId" | "_id">, token: string) {
     const res = await fetch(`${API_URL}/add-expense`, {
@@ -65,6 +64,42 @@ export async function getCategories(token: string): Promise<Category[]> {
 
     if (!res.ok) throw new Error("Failed to get categories")
     return res.json() as Promise<Category[]>
+}
+
+export async function getCategory(token: string, categoryId: string): Promise<Category>{
+    console.log("URL:", `${API_URL}/categories/${categoryId}`)
+    console.log("token:", token)
+    const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })
+
+    console.log("status:", res.status)
+    console.log("content-type:", res.headers.get("content-type"))
+    const text = await res.text()
+    console.log("raw response:", text)
+
+    const data = JSON.parse(text)
+    if (!res.ok) {
+        throw new Error(data.message || "Failed to get category")
+    }
+    return data as Category
+}
+
+export async function deleteCategory(token: string, categoryId: string){
+    const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })
+
+    if(!res.ok) throw new Error("Failed to delete category")
+    return res.json()
 }
 
 export async function getStats(token: string, startDate: Date, endDate: Date): Promise<Stats[]> {

@@ -116,6 +116,41 @@ router.post("/categories", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/categories/:categoryId", authMiddleware, async (req, res) => {
+  try{
+    const userId = req.user.userId
+    const {categoryId} = req.params
+    console.log("userId:", userId)
+    console.log("categoryId:", categoryId)
+    const category = await Category.findOne({userId, _id: categoryId})
+    console.log("found:", category)
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    return res.json(category)
+  }catch(err){
+    console.error(err)
+    res.status(500).json({ message: "Server error" });
+  }
+})
+
+router.put("/categories/:categoryId", authMiddleware, async (req, res) => {
+
+})
+
+router.delete("/categories/:categoryId", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const {categoryId} = req.params
+    const delCat = await Category.deleteOne({ _id: categoryId, userId })
+    const delCatExp = await Expense.deleteMany({ userId, categoryId })
+    return res.json({ deletedCategory: delCat, deletedExpenses: delCatExp })
+  } catch(err) {
+    console.error(err)
+    return res.status(500).json({ message: "Failed to delete category" })
+  }
+})
+
 router.post("/stats", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId

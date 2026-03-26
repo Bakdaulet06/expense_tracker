@@ -3,26 +3,29 @@ import CategoryForm from "../subcomponents/CategoryForm"
 import CategoryCard from "../subcomponents/CategoryCard"
 import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import Sidebar from "../subcomponents/desktop/Sidebar"
-import {getCategories} from "../../api/expense"
+import { deleteCategory, getCategories } from "../../api/expense"
 import { useEffect, useState } from "react"
 import { useCategories } from "../context/CategoriesProvider"
 import type { Category } from "../types/Category"
 import { useAuth } from "../context/AuthContext"
 import PopUp from "../subcomponents/PopUp"
+import Warning from "../subcomponents/Warning"
 
 const inputClass =
     "w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
 
 export default function CreateCategoryPage() {
     const activeTab = "categories"
-    const {categories, setCategories} = useCategories()
-    const {user} = useAuth()
+    const { categories, setCategories } = useCategories()
+    const { user } = useAuth()
     const [popUpMessage, setPopUpMessage] = useState("")
     const [popUpStatus, setPopUpStatus] = useState<"inactive" | "success" | "failure">("inactive")
+    const [selectedCategory, setSelectedCategory] = useState<Category>()
+    const [warningStatus, setWarningStatus] = useState(false)
 
     useEffect(() => {
         async function fetchCategories() {
-            if(!user) return
+            if (!user) return
             try {
                 const res: Category[] = await getCategories(user?.token)
                 setCategories(res)
@@ -32,12 +35,34 @@ export default function CreateCategoryPage() {
         }
 
         fetchCategories()
-    }, []) 
+    }, [])
+
+    async function handleDeleteCategory() {
+        if (!user || !selectedCategory) return
+        try {
+            await deleteCategory(user.token, selectedCategory._id)
+            setPopUpMessage("Category deleted successfully!")
+            setPopUpStatus("success")
+        } catch (err) {
+            setPopUpMessage("Error deleting category")
+            setPopUpStatus("failure")
+            console.error(err)
+        }
+    }
 
     return (
         <div className="flex min-h-screen bg-white md:bg-gray-50">
-            <Sidebar activeTab={activeTab}/>
-            <PopUp message={popUpMessage} status={popUpStatus} onClose={() => setPopUpStatus("inactive")}/>
+            <Warning
+                status={warningStatus}
+                message={`
+                    Are you sure you want to delete Category "${selectedCategory?.name}".
+                    The Expenses that belongs to this category also will be deleted.
+                `}
+                cancel={() => setWarningStatus(false)}
+                action={() => handleDeleteCategory()}
+            />
+            <Sidebar activeTab={activeTab} />
+            <PopUp message={popUpMessage} status={popUpStatus} onClose={() => setPopUpStatus("inactive")} />
             {/* Main content */}
             <div className="flex-1 flex flex-col h-screen">
 
@@ -68,7 +93,13 @@ export default function CreateCategoryPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-3 md:gap-4">
                                 {categories.map((cat) => (
-                                    <CategoryCard key={cat.name} cat={cat} size="sm"/>
+                                    <CategoryCard
+                                        key={cat.name}
+                                        cat={cat}
+                                        size="sm"
+                                        setSelectedCategory={setSelectedCategory}
+                                        setWarningStatus={setWarningStatus}
+                                    />
                                 ))}
                             </div>
                         </div>

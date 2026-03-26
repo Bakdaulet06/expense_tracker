@@ -21,18 +21,20 @@ export default function CategoryForm({
     circleSize,
     plusSize,
     setPopUpMessage,
-    setPopUpStatus
+    setPopUpStatus,
+    category
 }: {
     inputClass: string
     btnClass: string
     circleSize: string
     plusSize: string
     setPopUpMessage: (message: string) => void
-    setPopUpStatus: (status: "inactive" | "success" | "failure") => void
+    setPopUpStatus: (status: "inactive" | "success" | "failure") => void,
+    category?: Category
 }) {
-    const [selectedColor, setSelectedColor] = useState(presetColors[0])
-    const [name, setName] = useState("")
-    const [selectedEmoji, setSelectedEmoji] = useState(presetEmojis[0]);
+    const [selectedColor, setSelectedColor] = useState(category?.color || presetColors[0])
+    const [name, setName] = useState(category?.name || "")
+    const [selectedEmoji, setSelectedEmoji] = useState(category?.emoji || presetEmojis[0]);
     const {setCategories} = useCategories()
     const {user} = useAuth()
 

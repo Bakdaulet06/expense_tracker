@@ -8,6 +8,7 @@ import CreateCategoryPage from "./components/main/CreateCategoryPage"
 import StatsPage from "./components/main/StatsPage"
 import ListPage from "./components/main/ListPage"
 import ProfilePage from "./components/main/ProfilePage"
+import CategoryEdit from "./components/CategoryEdit"
 import { Navigate } from "react-router-dom"
 
 import "./index.css"
@@ -20,6 +21,7 @@ function App() {
       <Route path="/expense/list" element={<ListPage/>}/>
       <Route path="/expense/stats" element={<StatsPage/>}/>
       <Route path="/expense/categories" element={<CreateCategoryPage />} />
+      <Route path="/expense/categories/:categoryId" element={<CategoryEdit />} />
       <Route path="/expense/profile" element={<ProfilePage/>}/>
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
