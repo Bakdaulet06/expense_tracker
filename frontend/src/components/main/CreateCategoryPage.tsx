@@ -85,6 +85,7 @@ export default function CreateCategoryPage() {
                                 plusSize="w-4 h-4 md:w-5 md:h-5"
                                 setPopUpMessage={setPopUpMessage}
                                 setPopUpStatus={setPopUpStatus}
+                                editState={false}
                             />
                         </div>
 

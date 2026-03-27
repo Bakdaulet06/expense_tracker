@@ -43,6 +43,7 @@ export default function CategoryEdit() {
                             setPopUpMessage={setPopUpMessage}
                             setPopUpStatus={setPopUpStatus}
                             inputClass="w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
+                            editState={true}
                         />
                         <button className="w-full md:w-[300px] font-semibold text-sm md:text-base py-4 md:px-14 rounded-2xl shadow-lg transition-all active:scale-[0.98] hover:opacity-90 mt-3 cursor-pointer"
                         onClick={() => navigate("/expense/categories")}>

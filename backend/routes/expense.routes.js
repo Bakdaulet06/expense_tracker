@@ -78,7 +78,7 @@ router.get("/list/:expenseId", authMiddleware, async (req, res) => {
   try{
     const userId = req.user.userId
     const {expenseId} = req.params
-    const expense = await Category.find({ userId: userId, _id: expenseId});
+    const expense = await Expense.findOne({ userId: userId, _id: expenseId});
     res.json(expense);
   }catch(err){
     console.error(err)
@@ -87,14 +87,23 @@ router.get("/list/:expenseId", authMiddleware, async (req, res) => {
 })
 
 router.delete("/list/:expenseId", authMiddleware, async (req, res) => {
-  try{
+  try {
     const userId = req.user.userId
-    const {expenseId} = req.params
-    const deletedExpense = await Category.deleteOne({ _id: expenseId, userId })
-    res.json({deletedExpense: deletedExpense});
-  }catch(err){
+    const { expenseId } = req.params
+
+    const expense = await Expense.findOne({ _id: expenseId, userId })
+    if (!expense) return res.status(404).json({ message: "Expense not found" })
+
+    const categoryId = expense.categoryId 
+    await Expense.deleteOne({ _id: expenseId, userId })
+
+    const expenseCount = await Expense.countDocuments({ categoryId, userId })
+    await Category.findByIdAndUpdate(categoryId, { count: expenseCount })
+
+    res.json({ message: "Expense deleted successfully" })
+  } catch (err) {
     console.error(err)
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" })
   }
 })
 

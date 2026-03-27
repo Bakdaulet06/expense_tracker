@@ -33,7 +33,7 @@ export default function CategoryForm({
     setPopUpMessage: (message: string) => void
     setPopUpStatus: (status: "inactive" | "success" | "failure") => void,
     category?: Category,
-    editState?: boolean
+    editState: boolean
 }) {
     const [selectedColor, setSelectedColor] = useState(category?.color || presetColors[0])
     const [name, setName] = useState(category?.name || "")
@@ -172,7 +172,7 @@ export default function CategoryForm({
                     type="submit"
                     className={`${btnClass} cursor-pointer`}
                     style={{ backgroundColor: selectedColor }}
-                    onClick={editState ? handleAddCategory : handleUpdateCategory}
+                    onClick={editState ? handleUpdateCategory : handleAddCategory}
                 >
                     Save Category
                 </button>

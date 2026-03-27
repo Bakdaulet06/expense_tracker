@@ -74,7 +74,7 @@ export default function ExpenseRow({ item, setSelectedExpense, setWarningStatus 
                 <div className="flex gap-2">
                     <button
                         className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-white/60 text-gray-600 text-xs font-medium cursor-pointer"
-                        onClick={() => navigate(`/expense/expenses/${item._id}`)}
+                        onClick={() => navigate(`/expense/list/${item._id}`)}
                     >
                         <IconEdit />
                     </button>

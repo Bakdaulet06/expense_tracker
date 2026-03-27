@@ -29,7 +29,7 @@ export async function getExpense(token: string, expenseId: string): Promise<Expe
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || "Failed to get expense")
-    return data as Expense
+    return data as Promise<Expense>
 }
 
 export async function updateExpense(token: string, expenseId: string, expense: Partial<Expense>): Promise<Expense> {
