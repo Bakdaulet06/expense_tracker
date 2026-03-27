@@ -19,6 +19,45 @@ export async function addExpense(expense: Omit<Expense, "userId" | "_id">, token
     return res.json()
 }
 
+export async function getExpense(token: string, expenseId: string): Promise<Expense> {
+    const res = await fetch(`${API_URL}/list/${expenseId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message || "Failed to get expense")
+    return data as Expense
+}
+
+export async function updateExpense(token: string, expenseId: string, expense: Partial<Expense>): Promise<Expense> {
+    const res = await fetch(`${API_URL}/list/${expenseId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(expense)
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message || "Failed to update expense")
+    return data as Expense
+}
+
+export async function deleteExpense(token: string, expenseId: string): Promise<void> {
+    const res = await fetch(`${API_URL}/list/${expenseId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message || "Failed to delete expense")
+}
+
 export async function getExpensesByFilter(token: string, activeCategory: string, activeMonth: string): Promise<Expense[]> {
     if (!token) throw new Error("User not authenticated")
 

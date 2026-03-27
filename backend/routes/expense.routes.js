@@ -74,6 +74,53 @@ router.post("/list", authMiddleware, async (req, res) => {
   }
 })
 
+router.get("/list/:expenseId", authMiddleware, async (req, res) => {
+  try{
+    const userId = req.user.userId
+    const {expenseId} = req.params
+    const expense = await Category.find({ userId: userId, _id: expenseId});
+    res.json(expense);
+  }catch(err){
+    console.error(err)
+    res.status(500).json({ message: "Server error" });
+  }
+})
+
+router.delete("/list/:expenseId", authMiddleware, async (req, res) => {
+  try{
+    const userId = req.user.userId
+    const {expenseId} = req.params
+    const deletedExpense = await Category.deleteOne({ _id: expenseId, userId })
+    res.json({deletedExpense: deletedExpense});
+  }catch(err){
+    console.error(err)
+    res.status(500).json({ message: "Server error" });
+  }
+})
+
+router.put("/list/:expenseId", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId
+    const { expenseId } = req.params
+    const { name, cost, categoryId, date, description } = req.body
+
+    const updatedExpense = await Expense.findOneAndUpdate(
+      { _id: expenseId, userId },
+      { name, cost, categoryId, date, description },
+      { new: true }
+    )
+
+    if (!updatedExpense) {
+      return res.status(404).json({ message: "Expense not found" })
+    }
+
+    return res.json(updatedExpense)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: "Server error" })
+  }
+})
+
 router.get("/categories", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId

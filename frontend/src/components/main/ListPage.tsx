@@ -5,8 +5,10 @@ import BottomTabMobile from "../subcomponents/mobile/BottomTabMobile"
 import type { Expense } from "../types/Expense"
 import ExpenseRow from "../subcomponents/ExpenseRow"
 import { useAuth } from "../context/AuthContext"
-import { getExpensesByFilter } from "../../api/expense"
+import { deleteExpense, getExpensesByFilter } from "../../api/expense"
 import { useCategories } from "../context/CategoriesProvider"
+import Warning from "../subcomponents/Warning"
+import PopUp from "../subcomponents/PopUp"
 
 export default function ListPage() {
     const {categories} = useCategories()
@@ -22,6 +24,12 @@ export default function ListPage() {
     const activeTab = "list"
     const {user} = useAuth()
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+    const [warningStatus, setWarningStatus] = useState(false)
+    const [popUpMessage, setPopUpMessage] = useState("")
+    const [popUpStatus, setPopUpStatus] = useState<"inactive" | "success" | "failure">("inactive")
+    const [selectedExpense, setSelectedExpense] = useState<Expense>()
+
     useEffect(() => {
         async function fetchFiltered() {
             if (!user) return
@@ -45,9 +53,33 @@ export default function ListPage() {
         setGroupedExpenses(groupExpensesByDate(expenses));
     }, [expenses]);
 
+    async function handleDeleteExpense(){
+        if(!user || !selectedExpense) return
+        try{
+            await deleteExpense(user.token, selectedExpense._id)
+            setPopUpMessage("Expense deleted successfully!")
+            setPopUpStatus("success")
+            setWarningStatus(false)
+            const res = await getExpensesByFilter(
+                    user.token,
+                    activeCategory,
+                    activeMonth
+                )
+            setExpenses(res)
+        }catch(err){
+            console.error(err)
+        }
+    }
+
     return (
         <div className="flex min-h-screen bg-white md:bg-gray-50">
-
+            <Warning
+                status={warningStatus}
+                message={`Are you sure you want to delete this expense?`}
+                cancel={() => setWarningStatus(false)}
+                action={() => handleDeleteExpense()}
+            />
+            <PopUp status={popUpStatus} message={popUpMessage} onClose={() => setPopUpStatus("inactive")}/>
             {/* Sidebar — desktop only */}
             <Sidebar activeTab={activeTab}/>
 
@@ -97,7 +129,7 @@ export default function ListPage() {
                                 </p>
                                 <div className="space-y-2.5 md:space-y-3">
                                     {group.items.map((item) => (
-                                        <ExpenseRow key={item._id} item={item} />
+                                        <ExpenseRow key={item._id} item={item} setWarningStatus={setWarningStatus} setSelectedExpense={setSelectedExpense}/>
                                     ))}
                                 </div>
                             </div>
