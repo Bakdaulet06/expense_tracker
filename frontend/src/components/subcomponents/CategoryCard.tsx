@@ -3,7 +3,18 @@ import { useState, useRef, useEffect } from "react";
 import IconEdit from "../svgs/IconEdit";
 import IconDelete from "../svgs/IconDelete";
 import { useNavigate } from "react-router-dom";
-export default function CategoryCard({ cat, size, setSelectedCategory, setWarningStatus }: { cat: Category; size: "sm" | "md", setSelectedCategory: (cat: Category) => void, setWarningStatus: (status: boolean) => void}) {
+
+export default function CategoryCard({
+    cat,
+    size,
+    setSelectedCategory,
+    setWarningStatus
+}: {
+    cat: Category;
+    size: "sm" | "md",
+    setSelectedCategory: (cat: Category) => void,
+    setWarningStatus: (status: boolean) => void
+}) {
     const [selected, setSelected] = useState<boolean>(false)
     const isSmall = size === "sm"
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -43,35 +54,54 @@ export default function CategoryCard({ cat, size, setSelectedCategory, setWarnin
             onMouseLeave={handlePressEnd}
             onTouchStart={handlePressStart}
             onTouchEnd={handlePressEnd}
-        > 
+        >
             <div
                 className={`${isSmall ? "w-9 h-9 text-lg" : "w-12 h-12 text-2xl"} rounded-xl flex items-center justify-center`}
                 style={{ backgroundColor: cat.color + "33" }}
             >
                 {cat.emoji}
             </div>
+
             <div className="flex-1">
-                <p className={`font-semibold text-gray-800 ${isSmall ? "text-sm" : "text-base"}`}>{cat.name}</p>
-                <p className={`text-gray-400 ${isSmall ? "text-xs" : "text-sm"}`}>{cat.count} expenses</p>
+                <p className={`font-semibold ${isSmall ? "text-sm" : "text-base"}`} style={{ color: "var(--text-primary)" }}>
+                    {cat.name}
+                </p>
+                <p className={`${isSmall ? "text-xs" : "text-sm"}`} style={{ color: "var(--text-secondary)" }}>
+                    {cat.count} expenses
+                </p>
             </div>
-            {selected &&
+
+            {selected && (
                 <div className="flex gap-2">
-                    <button className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-white/60 text-gray-600 text-xs font-medium cursor-pointer"
-                    onClick={() => {console.log("cat:", cat) 
-                        navigate(`/expense/categories/${cat._id}`)}}
+                    <button
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer"
+                        style={{
+                            backgroundColor: "var(--card)",
+                            color: "var(--text-secondary)"
+                        }}
+                        onClick={() => {
+                            console.log("cat:", cat)
+                            navigate(`/expense/categories/${cat._id}`)
+                        }}
                     >
-                        <IconEdit/> 
+                        <IconEdit />
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-red-100 text-red-500 text-xs font-medium cursor-pointer"
-                        onClick={() => 
-                            {setWarningStatus(true)
-                                
-                            setSelectedCategory(cat)}}
-                        >
-                        <IconDelete/> 
+
+                    <button
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer"
+                        style={{
+                            backgroundColor: "#7f1d1d33",
+                            color: "#f87171"
+                        }}
+                        onClick={() => {
+                            setWarningStatus(true)
+                            setSelectedCategory(cat)
+                        }}
+                    >
+                        <IconDelete />
                     </button>
                 </div>
-            }
+            )}
         </div>
     )
 }

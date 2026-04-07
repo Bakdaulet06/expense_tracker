@@ -19,11 +19,14 @@ export default function ResetPassword() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-sm w-full max-w-sm px-8 py-12 flex flex-col items-center gap-6">
+        <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "var(--bg-primary)" }}>
+            <div
+                className="rounded-3xl shadow-sm w-full max-w-sm px-8 py-12 flex flex-col items-center gap-6"
+                style={{ backgroundColor: "var(--card)" }}
+            >
 
                 {/* Logo */}
-                <div className="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-sky-100 dark:bg-sky-900 rounded-xl flex items-center justify-center">
                     <svg
                         className="w-7 h-7 text-sky-400"
                         viewBox="0 0 24 24"
@@ -40,42 +43,69 @@ export default function ResetPassword() {
 
                 {/* Heading */}
                 <div className="text-center">
-                    <h1 className="text-2xl font-semibold text-gray-800 tracking-tight">Reset Password</h1>
-                    <p className="text-sm text-gray-400 mt-1">Enter the code sent to your email</p>
+                    <h1 className="text-2xl font-semibold tracking-tight" style={{ color: "var(--text-primary)" }}>
+                        Reset Password
+                    </h1>
+                    <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+                        Enter the code sent to your email
+                    </p>
                 </div>
 
                 {/* Form */}
                 <div className="w-full flex flex-col gap-4 mt-2">
+
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-medium text-gray-600">Email Address</label>
+                        <label style={{ color: "var(--text-secondary)" }} className="text-sm font-medium">
+                            Email Address
+                        </label>
                         <input
                             type="text"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-300 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all"
+                            style={{
+                                backgroundColor: "var(--card)",
+                                color: "var(--text-primary)",
+                                border: "1px solid var(--border)"
+                            }}
+                            className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-medium text-gray-600">Reset Code</label>
+                        <label style={{ color: "var(--text-secondary)" }} className="text-sm font-medium">
+                            Reset Code
+                        </label>
                         <input
                             type="text"
                             placeholder="Enter your code"
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-300 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all tracking-widest"
+                            style={{
+                                backgroundColor: "var(--card)",
+                                color: "var(--text-primary)",
+                                border: "1px solid var(--border)",
+                                letterSpacing: "0.2em"
+                            }}
+                            className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
                         />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-medium text-gray-600">New Password</label>
+                        <label style={{ color: "var(--text-secondary)" }} className="text-sm font-medium">
+                            New Password
+                        </label>
                         <input
                             type="password"
                             placeholder="••••••••"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-300 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all"
+                            style={{
+                                backgroundColor: "var(--card)",
+                                color: "var(--text-primary)",
+                                border: "1px solid var(--border)"
+                            }}
+                            className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
                         />
                     </div>
 
@@ -88,12 +118,13 @@ export default function ResetPassword() {
                 </div>
 
                 {/* Divider */}
-                <div className="w-full border-t border-gray-100 pt-5 text-center">
-                    <p className="text-sm text-gray-400">
+                <div className="w-full border-t pt-5 text-center" style={{ borderColor: "var(--border)" }}>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                         Back to{" "}
                         <button
                             onClick={() => navigate("/auth/login")}
-                            className="text-sky-400 hover:text-sky-500 font-medium transition-colors"
+                            style={{ color: "var(--accent)" }}
+                            className="font-medium transition-colors"
                         >
                             Login
                         </button>

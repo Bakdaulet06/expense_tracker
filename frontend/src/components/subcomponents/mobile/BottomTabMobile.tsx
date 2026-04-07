@@ -9,18 +9,24 @@ export default function BottomTabMobile(props: { activeTab: string }) {
     const navigate = useNavigate()
     const navItems = [
         { key: "add",        label: "Add",        path: "/expense/add-expense",   Icon: IconAdd      },
-        { key: "list",       label: "List",        path: "/expense/list",          Icon: IconList     },
-        { key: "stats",      label: "Stats",       path: "/expense/stats",         Icon: IconStats    },
-        { key: "categories", label: "Categories",  path: "/expense/categories",    Icon: IconCategory },
-        { key: "profile",    label: "Profile",     path: "/expense/profile",       Icon: IconProfile  },
+        { key: "list",       label: "List",       path: "/expense/list",           Icon: IconList     },
+        { key: "stats",      label: "Stats",      path: "/expense/stats",          Icon: IconStats    },
+        { key: "categories", label: "Categories", path: "/expense/categories",     Icon: IconCategory },
+        { key: "profile",    label: "Profile",    path: "/expense/profile",        Icon: IconProfile  },
     ]
 
     return (
-        <div className="sticky bottom-0 border-t border-gray-100 px-6 py-3 flex justify-between items-center bg-white">
+        <div
+            style={{ background: "var(--card)", borderTopColor: "var(--border)" }}
+            className="sticky bottom-0 border-t px-6 py-3 flex justify-between items-center"
+        >
             {navItems.map(({ key, label, Icon, path }) => (
                 <button key={key} onClick={() => navigate(path)} className="flex flex-col items-center gap-1">
                     <Icon active={props.activeTab === key} />
-                    <span className={`text-[9px] font-bold uppercase tracking-widest ${props.activeTab === key ? "text-indigo-500" : "text-gray-400"}`}>
+                    <span
+                        style={{ color: props.activeTab === key ? "var(--indigo-active)" : "var(--text-secondary)" }}
+                        className="text-[9px] font-bold uppercase tracking-widest"
+                    >
                         {label}
                     </span>
                 </button>

@@ -5,18 +5,21 @@ import { BrowserRouter } from "react-router-dom"
 import { AuthProvider } from "./components/context/AuthContext"
 import { DateProvider } from "./components/context/DateContext"
 import { CategoriesProvider } from "./components/context/CategoriesProvider"
+import { ThemeProvider } from "./components/context/ThemeContext"
 import "./index.css"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <CategoriesProvider>
-          <DateProvider>
-            <App />
-          </DateProvider>
-        </CategoriesProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CategoriesProvider>
+            <DateProvider>
+              <App />
+            </DateProvider>
+          </CategoriesProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

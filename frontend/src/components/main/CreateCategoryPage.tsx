@@ -1,3 +1,5 @@
+
+
 import CategoryPageHeader from "../subcomponents/headers/CategoryPageHeader"
 import CategoryForm from "../subcomponents/CategoryForm"
 import CategoryCard from "../subcomponents/CategoryCard"
@@ -12,8 +14,7 @@ import PopUp from "../subcomponents/PopUp"
 import Warning from "../subcomponents/Warning"
 
 const inputClass =
-    "w-full border border-gray-200 rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base text-gray-700 placeholder-gray-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 transition-all bg-white"
-
+    "w-full border rounded-2xl px-4 md:px-5 py-3 md:py-4 text-sm md:text-base outline-none focus:ring-2 transition-all"
 export default function CreateCategoryPage() {
     const activeTab = "categories"
     const { categories, setCategories } = useCategories()
@@ -54,7 +55,7 @@ export default function CreateCategoryPage() {
     }
 
     return (
-        <div className="flex min-h-screen bg-white md:bg-gray-50">
+        <div style={{ background: "var(--bg-primary)" }} className="flex min-h-screen">
             <Warning
                 status={warningStatus}
                 message={`
@@ -92,8 +93,12 @@ export default function CreateCategoryPage() {
                         {/* Existing categories */}
                         <div className="mt-10 md:mt-0 md:w-80 md:shrink-0">
                             <div className="flex items-center justify-between mb-4 md:mb-5">
-                                <span className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Existing</span>
-                                <span className="text-[10px] md:text-xs font-bold text-indigo-400 uppercase tracking-widest">{categories.length} active</span>
+                                <span style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                                    Existing
+                                </span>
+                                <span style={{ color: "var(--indigo-active)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                                    {categories.length} active
+                                </span>
                             </div>
                             <div className="grid grid-cols-2 gap-3 md:gap-4">
                                 {categories.map((cat) => (

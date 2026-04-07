@@ -11,54 +11,53 @@ export default function ListPageHeader(props: {
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
   return (
-    <div className="px-6 md:px-14 pt-10 pb-6 md:pb-8 md:bg-white md:border-b md:border-gray-100 flex items-end justify-between">
+    <div
+      style={{ background: "var(--card)", borderBottomColor: "var(--border)" }}
+      className="px-6 md:px-14 pt-10 pb-6 md:pb-8 md:border-b flex items-end justify-between"
+    >
       <div>
-        <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+        <p style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1">
           Total Spending
         </p>
-        <div className="flex items-center gap-3 md:gap-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-            {props.totalSpending.toLocaleString("en-US", { minimumFractionDigits: 2 })}₸
-          </h1>
-        </div>
+        <h1 style={{ color: "var(--text-primary)" }} className="text-4xl md:text-5xl font-bold">
+          {props.totalSpending.toLocaleString("en-US", { minimumFractionDigits: 2 })}₸
+        </h1>
       </div>
 
       {/* Desktop filters */}
       <div className="hidden md:flex gap-3 pb-1">
-        {/* Category */}
-        <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
-          <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
+        <div className="space-y-1.5 md:space-y-2">
+          <label style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">
             Category
           </label>
-          <div className="relative">
-            <select
-              value={props.activeCategory}
-              onChange={(e) => props.setActiveCategory(e.target.value)}
-            >
-              <option value="All Categories">All Categories</option>
-              {categories.map(category =>
-                <option key={category._id} value={category.name}>{category.name}</option>
-              )}
-            </select>
-          </div>
+          <select
+            value={props.activeCategory}
+            onChange={(e) => props.setActiveCategory(e.target.value)}
+            style={{ background: "var(--card)", color: "var(--text-primary)", borderColor: "var(--border)" }}
+            className="w-full rounded-xl px-3 py-2 text-sm border outline-none"
+          >
+            <option value="All Categories">All Categories</option>
+            {categories.map(category =>
+              <option key={category._id} value={category.name}>{category.name}</option>
+            )}
+          </select>
         </div>
 
-        {/* Month */}
-        <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
-          <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
+        <div className="space-y-1.5 md:space-y-2">
+          <label style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">
             Month
           </label>
-          <div className="relative">
-            <select
-              value={props.activeMonth}
-              onChange={(e) => props.setActiveMonth(e.target.value)}
-            >
-              <option value="">All Time</option>
-              {months.map((month, index) =>
-                <option key={month} value={index.toString()}>{month}</option>
-              )}
-            </select>
-          </div>
+          <select
+            value={props.activeMonth}
+            onChange={(e) => props.setActiveMonth(e.target.value)}
+            style={{ background: "var(--card)", color: "var(--text-primary)", borderColor: "var(--border)" }}
+            className="w-full rounded-xl px-3 py-2 text-sm border outline-none"
+          >
+            <option value="">All Time</option>
+            {months.map((month, index) =>
+              <option key={month} value={index.toString()}>{month}</option>
+            )}
+          </select>
         </div>
       </div>
     </div>

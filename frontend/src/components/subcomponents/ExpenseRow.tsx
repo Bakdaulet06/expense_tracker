@@ -61,11 +61,11 @@ export default function ExpenseRow({ item, setSelectedExpense, setWarningStatus 
                     {category.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-black truncate">{item.name}</p>
-                    <p className="text-xs text-gray-800 truncate">{item.description}</p>
+                    <p style={{ color: "var(--text-primary)" }} className="text-sm font-semibold truncate">{item.name}</p>
+                    <p style={{ color: "var(--text-secondary)" }} className="text-xs truncate">{item.description}</p>
                 </div>
                 <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-black">
+                    <p style={{ color: "var(--text-primary)" }} className="text-sm font-bold">
                         {Math.abs(item.cost).toFixed(2)}₸
                     </p>
                 </div>
@@ -73,7 +73,8 @@ export default function ExpenseRow({ item, setSelectedExpense, setWarningStatus 
             {selected &&
                 <div className="flex gap-2">
                     <button
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-white/60 text-gray-600 text-xs font-medium cursor-pointer"
+                        style={{ background: "var(--card)", color: "var(--text-secondary)" }}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-xl text-xs font-medium cursor-pointer"
                         onClick={() => navigate(`/expense/list/${item._id}`)}
                     >
                         <IconEdit />

@@ -5,13 +5,14 @@ import { useCategories } from "../context/CategoriesProvider";
 import type { Category } from "../types/Category";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 const presetColors = [
-    "#22c55e", // green
-    "#3b82f6", // blue
-    "#a855f7", // purple
-    "#f97316", // orange
-    "#ef4444", // red
-    "#818cf8", // indigo-light
+    "#22c55e",
+    "#3b82f6",
+    "#a855f7",
+    "#f97316",
+    "#ef4444",
+    "#818cf8",
 ]
 
 const presetEmojis = ["💸", "🍴", "🚕", "🎟️", "📚", "💻", "🎵", "🏠", "🛒"];
@@ -62,7 +63,6 @@ export default function CategoryForm({
             color: selectedColor,
             emoji: selectedEmoji
         };
-        console.log("Category to add:", newCategory);
 
         try{
             const res: Category = await addCategory(newCategory, user.token)
@@ -96,13 +96,28 @@ export default function CategoryForm({
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
             {/* Name */}
             <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name</label>
-                <input type="text" placeholder="e.g. Subscriptions" className={inputClass} value={name} onChange={(e) => setName(e.target.value)}/>
+                <label style={{ color: "var(--text-secondary)" }} className="text-[10px] font-bold uppercase tracking-widest">
+                    Name
+                </label>
+                <input
+                    type="text"
+                    placeholder="e.g. Subscriptions"
+                    className={inputClass}
+                    style={{
+                        background: "var(--card)",
+                        color: "var(--text-primary)",
+                        borderColor: "var(--border)"
+                    }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
             </div>
 
             {/* Color theme */}
             <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Color Theme</label>
+                <label style={{ color: "var(--text-secondary)" }} className="text-[10px] font-bold uppercase tracking-widest">
+                    Color Theme
+                </label>
                 <div className="flex items-center gap-3 flex-wrap">
                     {presetColors.map((color) => (
                         <button
@@ -111,18 +126,21 @@ export default function CategoryForm({
                             onClick={() => setSelectedColor(color)}
                             className={`${circleSize} rounded-full transition-all shrink-0 ${
                                 selectedColor === color
-                                    ? "ring-2 ring-offset-2 ring-gray-400 scale-110"
+                                    ? "ring-2 ring-offset-2 scale-110"
                                     : "hover:scale-105"
                             }`}
-                            style={{ backgroundColor: color }}
+                            style={{
+                                backgroundColor: color,
+                                boxShadow: selectedColor === color ? "0 0 0 2px var(--border)" : undefined
+                            }}
                         />
                     ))}
-                    {/* Custom color picker */}
                     <label
-                        className={`${circleSize} rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors shrink-0 relative`}
+                        style={{ borderColor: "var(--border)" }}
+                        className={`${circleSize} rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors shrink-0 relative`}
                         title="Custom color"
                     >
-                        <IconPlus className={`${plusSize} text-gray-400`} />
+                        <IconPlus className={`${plusSize}`} />
                         <input
                             type="color"
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
@@ -133,19 +151,20 @@ export default function CategoryForm({
                     </label>
                 </div>
 
-                {/* Color preview swatch */}
                 <div className="flex items-center gap-3 mt-1">
                     <div
                         className="w-8 h-8 rounded-xl shadow-sm transition-all"
                         style={{ backgroundColor: selectedColor }}
                     />
-                    <span className="text-sm text-gray-500 font-mono">{selectedColor}</span>
+                    <span style={{ color: "var(--text-secondary)" }} className="text-sm font-mono">
+                        {selectedColor}
+                    </span>
                 </div>
             </div>
 
             {/* Emoji Picker */}
             <div className="space-y-3">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <label style={{ color: "var(--text-secondary)" }} className="text-[10px] font-bold uppercase tracking-widest">
                     Emoji
                 </label>
                 <div className="flex items-center gap-3 flex-wrap">
@@ -156,9 +175,12 @@ export default function CategoryForm({
                         onClick={() => setSelectedEmoji(emoji)}
                         className={`text-2xl transition-all shrink-0 ${
                         selectedEmoji === emoji
-                            ? "ring-2 ring-offset-2 ring-gray-400 scale-110"
+                            ? "ring-2 ring-offset-2 scale-110"
                             : "hover:scale-105"
                         }`}
+                        style={{
+                            boxShadow: selectedEmoji === emoji ? "0 0 0 2px var(--border)" : undefined
+                        }}
                     >
                         {emoji}
                     </button>

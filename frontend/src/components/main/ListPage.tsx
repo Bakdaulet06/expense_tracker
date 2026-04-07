@@ -17,9 +17,7 @@ export default function ListPage() {
     const [expenses, setExpenses] = useState<Expense[]>([])
     const [groupedExpenses, setGroupedExpenses] = useState<GroupedExpenses[]>([])
     const totalSpending = useMemo(() => {
-        return expenses.reduce((sum, item) => 
-            sum + Math.abs(item.cost), 0
-        )
+        return expenses.reduce((sum, item) => sum + Math.abs(item.cost), 0)
     }, [expenses])
     const activeTab = "list"
     const {user} = useAuth()
@@ -33,60 +31,46 @@ export default function ListPage() {
     useEffect(() => {
         async function fetchFiltered() {
             if (!user) return
-
             try {
-                const res = await getExpensesByFilter(
-                    user.token,
-                    activeCategory,
-                    activeMonth
-                )
+                const res = await getExpensesByFilter(user.token, activeCategory, activeMonth)
                 setExpenses(res)
             } catch (err) {
                 console.error(err)
             }
         }
-
         fetchFiltered()
     }, [activeCategory, activeMonth, user])
 
     useEffect(() => {
-        setGroupedExpenses(groupExpensesByDate(expenses));
-    }, [expenses]);
+        setGroupedExpenses(groupExpensesByDate(expenses))
+    }, [expenses])
 
-    async function handleDeleteExpense(){
-        if(!user || !selectedExpense) return
-        try{
+    async function handleDeleteExpense() {
+        if (!user || !selectedExpense) return
+        try {
             await deleteExpense(user.token, selectedExpense._id)
             setPopUpMessage("Expense deleted successfully!")
             setPopUpStatus("success")
             setWarningStatus(false)
-            const res = await getExpensesByFilter(
-                    user.token,
-                    activeCategory,
-                    activeMonth
-                )
+            const res = await getExpensesByFilter(user.token, activeCategory, activeMonth)
             setExpenses(res)
-        }catch(err){
+        } catch(err) {
             console.error(err)
         }
     }
 
     return (
-        <div className="flex min-h-screen bg-white md:bg-gray-50">
+        <div style={{ background: "var(--bg-primary)" }} className="flex min-h-screen">
             <Warning
                 status={warningStatus}
-                message={`Are you sure you want to delete this expense?`}
+                message="Are you sure you want to delete this expense?"
                 cancel={() => setWarningStatus(false)}
                 action={() => handleDeleteExpense()}
             />
             <PopUp status={popUpStatus} message={popUpMessage} onClose={() => setPopUpStatus("inactive")}/>
-            {/* Sidebar — desktop only */}
             <Sidebar activeTab={activeTab}/>
 
-            {/* Main content */}
             <div className="flex-1 flex flex-col h-screen">
-
-                {/* Header */}
                 <ListPageHeader
                     totalSpending={totalSpending}
                     activeCategory={activeCategory}
@@ -97,25 +81,35 @@ export default function ListPage() {
 
                 {/* Mobile filters */}
                 <div className="flex md:hidden gap-3 px-6 mb-5">
-                    <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
-                        <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
-                        <div className="relative">
-                            <select value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)}>
-                                <option value="All Categories" key={"All Categories"}>All Categories</option>
-                                {categories.map(category => 
-                                    <option key={category._id} value={category.name}>{category.name}</option>
-                                )}
-                            </select>
-                        </div>
-                        <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Month</label>
-                        <div className="relative">
-                            <select value={activeMonth} onChange={(e) => setActiveMonth(e.target.value)}>
-                                <option value="">All Time</option>
-                                {months.map((month, index) => 
-                                    <option key={month} value={index.toString()}>{month}</option>
-                                )}
-                            </select>
-                        </div>
+                    <div className="space-y-1.5">
+                        <label style={{ color: "var(--text-secondary)" }} className="text-[10px] font-bold uppercase tracking-widest">
+                            Category
+                        </label>
+                        <select
+                            value={activeCategory}
+                            onChange={(e) => setActiveCategory(e.target.value)}
+                            style={{ background: "var(--card)", color: "var(--text-primary)", borderColor: "var(--border)" }}
+                            className="w-full rounded-xl px-3 py-2 text-sm border outline-none"
+                        >
+                            <option value="All Categories">All Categories</option>
+                            {categories.map(category =>
+                                <option key={category._id} value={category.name}>{category.name}</option>
+                            )}
+                        </select>
+                        <label style={{ color: "var(--text-secondary)" }} className="text-[10px] font-bold uppercase tracking-widest">
+                            Month
+                        </label>
+                        <select
+                            value={activeMonth}
+                            onChange={(e) => setActiveMonth(e.target.value)}
+                            style={{ background: "var(--card)", color: "var(--text-primary)", borderColor: "var(--border)" }}
+                            className="w-full rounded-xl px-3 py-2 text-sm border outline-none"
+                        >
+                            <option value="">All Time</option>
+                            {months.map((month, index) =>
+                                <option key={month} value={index.toString()}>{month}</option>
+                            )}
+                        </select>
                     </div>
                 </div>
 
@@ -124,12 +118,17 @@ export default function ListPage() {
                     <div className="md:max-w-3xl space-y-6 md:space-y-8">
                         {groupedExpenses.map((group) => (
                             <div key={group.group}>
-                                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 md:mb-4">
+                                <p style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest mb-3 md:mb-4">
                                     {group.group}
                                 </p>
                                 <div className="space-y-2.5 md:space-y-3">
                                     {group.items.map((item) => (
-                                        <ExpenseRow key={item._id} item={item} setWarningStatus={setWarningStatus} setSelectedExpense={setSelectedExpense}/>
+                                        <ExpenseRow
+                                            key={item._id}
+                                            item={item}
+                                            setWarningStatus={setWarningStatus}
+                                            setSelectedExpense={setSelectedExpense}
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -137,7 +136,6 @@ export default function ListPage() {
                     </div>
                 </div>
 
-                {/* Bottom nav — mobile only */}
                 <div className="md:hidden">
                     <BottomTabMobile activeTab={activeTab} />
                 </div>
@@ -166,15 +164,15 @@ function groupExpensesByDate(items: Expense[]): GroupedExpenses[] {
         if (!map.has(key)) map.set(key, [])
         map.get(key)!.push(item)
     }
-    return Array.from(map.entries()).sort(([dateA], [dateB]) => {
-            return new Date(dateB).getTime() - new Date(dateA).getTime()
-        }).map(([key, items]) => ({
-        group: formatGroupLabel(new Date(key)),
-        items: items,
-    }))
+    return Array.from(map.entries())
+        .sort(([dateA], [dateB]) => new Date(dateB).getTime() - new Date(dateA).getTime())
+        .map(([key, items]) => ({
+            group: formatGroupLabel(new Date(key)),
+            items,
+        }))
 }
 
-interface GroupedExpenses{
-    group: string,
+interface GroupedExpenses {
+    group: string
     items: Expense[]
-}   
+}

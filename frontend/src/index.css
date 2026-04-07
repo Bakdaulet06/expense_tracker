@@ -1,4 +1,27 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --card: #ffffff;
+  --indigo-subtle: #eef2ff;
+  --indigo-active: #4f46e5;
+}
+
+.dark {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --card: #1e293b;
+  --indigo-subtle: #1e1b4b;
+  --indigo-active: #818cf8;
+}
 
 @keyframes slide-down {
     from { opacity: 0; transform: translate(-50%, -16px); }

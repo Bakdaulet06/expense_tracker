@@ -7,12 +7,14 @@ export default function StatsRow({ stats }: { stats: Stats }) {
                 {stats.emoji}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-sm md:text-base font-semibold text-gray-800">{stats.name}</p>
-                <p className="text-xs md:text-sm text-gray-400 mb-2">
+                <p style={{ color: "var(--text-primary)" }} className="text-sm md:text-base font-semibold">
+                    {stats.name}
+                </p>
+                <p style={{ color: "var(--text-secondary)" }} className="text-xs md:text-sm mb-2">
                     {stats.transactions} transaction{stats.transactions !== 1 ? "s" : ""}
                 </p>
             </div>
-            <p className="text-sm md:text-lg font-bold text-gray-800 shrink-0">
+            <p style={{ color: "var(--text-primary)" }} className="text-sm md:text-lg font-bold shrink-0">
                 {stats.amount.toFixed(2)}₸
             </p>
         </div>

@@ -48,8 +48,9 @@ export default function StatsPage() {
         if (!e.target.value) return
         setEndDate(new Date(e.target.value))
     }
+
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div style={{ background: "var(--bg-primary)", color: "var(--text-primary)" }} className="flex min-h-screen">
             <Sidebar activeTab={activeTab}/>
             <div className="flex-1 flex flex-col h-screen">
                 <StatsPageHeader />
@@ -57,11 +58,11 @@ export default function StatsPage() {
                     <div className="space-y-1.5 md:space-y-2 col-span-1 md:col-span-2">
                         <div className="flex gap-5">
                             <div className="flex flex-col">
-                                <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">StartDate</label>
+                                <label style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">StartDate</label>
                                 <DateHandler formattedDate={formattedStartDate} handlerFunction={handleStartDateChange}/>
                             </div>
                             <div className="flex flex-col">
-                                <label className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">EndDate</label>
+                                <label style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest">EndDate</label>
                                 <DateHandler formattedDate={formattedEndDate} handlerFunction={handleEndDateChange}/>
                             </div>
                         </div>
@@ -69,13 +70,13 @@ export default function StatsPage() {
                 </div>
                 <div className="flex-1 overflow-y-auto px-5 md:px-14 pb-6 md:py-10">
                     <div className="md:max-w-4xl space-y-6 md:space-y-8">
-                        <div className="bg-gray-900 rounded-3xl px-6 md:px-10 py-6 md:py-8 flex items-center justify-between">
+                        <div style={{ background: "var(--card)" }} className="rounded-3xl px-6 md:px-10 py-6 md:py-8 flex items-center justify-between">
                             <div>
-                                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 md:mb-3">
+                                <p style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-3">
                                     Total Spending
                                 </p>
                                 <div className="flex items-baseline gap-0.5 md:gap-1">
-                                    <span className="text-4xl md:text-6xl font-bold text-white">
+                                    <span style={{ color: "var(--text-primary)" }} className="text-4xl md:text-6xl font-bold">
                                         {Math.floor(totalSpending).toLocaleString()}.{String((totalSpending % 1).toFixed(2)).slice(2)}₸
                                     </span>
                                 </div>
@@ -95,12 +96,12 @@ export default function StatsPage() {
                             </div>
                         </div>
                         <div>
-                            <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 md:mb-4 px-1 md:px-0">
+                            <p style={{ color: "var(--text-secondary)" }} className="text-[10px] md:text-xs font-bold uppercase tracking-widest mb-3 md:mb-4 px-1 md:px-0">
                                 By Category
                             </p>
                             {
                                 stats.length !== 0 ? 
-                                <div className="bg-white rounded-3xl overflow-hidden divide-y divide-gray-50 shadow-sm">
+                                <div style={{ background: "var(--card)", borderColor: "var(--border)" }} className="rounded-3xl overflow-hidden divide-y border shadow-sm">
                                     {stats.filter(stat => stat.transactions !== 0).map((stat) => (
                                         <div key={stat.name} className="px-4 md:px-6">
                                             <StatsRow stats={stat} />
@@ -108,7 +109,7 @@ export default function StatsPage() {
                                     ))}
                                 </div> 
                                 : 
-                                <div>No Transactions</div>
+                                <div style={{ color: "var(--text-secondary)" }}>No Transactions</div>
                             }
                         </div>
                     </div>
@@ -126,12 +127,13 @@ function DateHandler(props: {formattedDate: string, handlerFunction: (e: React.C
     const inputRef = useRef<HTMLInputElement>(null)
     return(
         <div className="flex items-center gap-2 md:gap-3 mt-0.5 md:mt-1">
-            <h1 className="text-xl md:text-4xl font-light text-gray-800">
+            <h1 style={{ color: "var(--text-primary)" }} className="text-xl md:text-4xl font-light">
                 {props.formattedDate}
             </h1>
             <div className="relative">
                 <button
                     onClick={() => inputRef.current?.showPicker()}
+                    style={{ background: "var(--bg-secondary)" }}
                     className="w-7 h-7 md:w-9 md:h-9 rounded-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
                     <IconCalendar />
