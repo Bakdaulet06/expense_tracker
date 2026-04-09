@@ -13,22 +13,35 @@ import ExpenseEdit from "./components/main/ExpenseEdit"
 import { Navigate } from "react-router-dom"
 
 import "./index.css"
+import { useAuth } from "./components/context/AuthContext"
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth()
+  return user ? <>{children}</> : <Navigate to="/auth/login" replace />
+}
 
 function App() {
+  const { user } = useAuth()
+
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/auth/login" replace />} />
-      <Route path="/expense/add-expense" element={<MainPage/>}/>
-      <Route path="/expense/list" element={<ListPage/>}/>
-      <Route path="/expense/stats" element={<StatsPage/>}/>
-      <Route path="/expense/categories" element={<CreateCategoryPage />} />
-      <Route path="/expense/categories/:categoryId" element={<CategoryEdit />} />
-      <Route path="/expense/list/:expenseId" element={<ExpenseEdit />}/>
-      <Route path="/expense/profile" element={<ProfilePage/>}/>
+      {/* Redirect root based on auth state */}
+      <Route path="/" element={<Navigate to={user ? "/expense/add-expense" : "/auth/login"} replace />} />
+
+      {/* Protected routes */}
+      <Route path="/expense/add-expense" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+      <Route path="/expense/list" element={<ProtectedRoute><ListPage /></ProtectedRoute>} />
+      <Route path="/expense/stats" element={<ProtectedRoute><StatsPage /></ProtectedRoute>} />
+      <Route path="/expense/categories" element={<ProtectedRoute><CreateCategoryPage /></ProtectedRoute>} />
+      <Route path="/expense/categories/:categoryId" element={<ProtectedRoute><CategoryEdit /></ProtectedRoute>} />
+      <Route path="/expense/list/:expenseId" element={<ProtectedRoute><ExpenseEdit /></ProtectedRoute>} />
+      <Route path="/expense/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+
+      {/* Auth routes */}
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-      <Route path="/auth/reset-password" element={<ResetPassword />}/>
+      <Route path="/auth/reset-password" element={<ResetPassword />} />
     </Routes>
   )
 }
